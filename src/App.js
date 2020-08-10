@@ -37,7 +37,7 @@ export default function App() {
     >
       <div
         className={`
-          w-full sm:w-1/3 md:w-1/4 lg:w-1/5 md:h-full
+          w-full md:w-1/4 lg:w-1/5 md:h-full
           border border-blue-500
         `}
       >

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { curveCardinal, scaleOrdinal, scaleBand, schemeDark2, schemeSet3, select, area, axisBottom, easeBackIn } from 'd3';
 
 function WordStream({wordsData, dimensions}) {
