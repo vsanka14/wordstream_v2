@@ -1,0 +1,11 @@
+export {default as IconCamera} from './camera';
+export {default as IconCheck} from './check';
+export {default as IconVerify} from './login';
+export {default as IconPlane} from './plane';
+export {default as IconRetry} from './retry';
+export {default as IconSpinner} from './spinner';
+export {default as IconLogin} from './verify';
+export {default as IconInfo} from './info';
+export {default as IconBug} from './bug';
+export {default as IconCircleCheck} from './circlecheck';
+export {default as IconX} from './x';
