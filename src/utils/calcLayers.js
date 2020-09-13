@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import calcWords from './calcWords';
 
 export default function calcLayers(props) {
-    let {data, screenDimensions} = props;
+    let { data, screenDimensions, minFontSize, maxFontSize } = props;
     let dates = [];
         data.forEach((row) => {
             dates.push(row.date);
@@ -85,7 +85,7 @@ export default function calcLayers(props) {
         ...layersData,
         screenDimensions,
         data,
-        minFontSize: 10,
-        maxFontSize: 24,
+        minFontSize,
+        maxFontSize
     });
 }   

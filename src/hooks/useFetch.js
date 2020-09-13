@@ -1,7 +1,7 @@
 import { useReducer, useCallback } from 'react';
 
 const defaults = {
-    baseUrl: process.env.API_URL || 'http://localhost:5000' ,
+    baseUrl: process.env.REACT_APP_API_URL || 'http://localhost:5000',
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -19,14 +19,12 @@ const initialState = {
 const useFetchReducer = (state = initialState, action) => {
     switch(action.type) {
         case 'FETCH_START':
-            console.log('FETCH_START');
             return {
                 ...state,
                 loading: true,
                 idle: false
             }
         case 'FETCH_SUCCESS':
-            console.log('FETCH_SUCCESS', action);
             return {
                 ...state,
                 loading: false,
@@ -34,7 +32,6 @@ const useFetchReducer = (state = initialState, action) => {
                 error: false
             }
         case 'FETCH_ERROR':
-            console.log('FETCH_ERROR');
             return {
                 ...state,
                 error: action.payload,
