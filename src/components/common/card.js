@@ -2,11 +2,11 @@ import React, { useMemo } from 'react';
 import { Paragraph } from '.';
 
 function Card({color, icon, data}) {
-    const colors = {
-        red: 'bg-red-500',
+    const colors = useMemo(() => ({
+		red: 'bg-red-500',
         blue: 'bg-blue-500',
         gray: 'bg-gray-500'
-    }
+	}), []);
 
     return (
         <div

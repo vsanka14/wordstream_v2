@@ -5,7 +5,7 @@ import {
 	Button,
 	Range,
 	IconContainer,
-} from 'components/styled';
+} from 'components/common';
 import Select from 'react-select';
 import { useFormFields, useFetch } from 'hooks';
 import { IconPlane } from 'icons';

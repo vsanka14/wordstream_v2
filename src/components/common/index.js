@@ -6,3 +6,5 @@ export { default as Button } from './button';
 export { default as IconContainer } from './iconcontainer';
 export { default as Range } from './range';
 export { default as Card } from './card';
+export { default as Loader } from './loader';
+export { default as Error } from './error';

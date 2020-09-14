@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import { useResizeObserver } from 'hooks';
-import { SecondaryHeading, Paragraph } from 'components/styled';
+import { SecondaryHeading, Paragraph } from 'components/common';
 
 function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
 	const wrapperRef = useRef();

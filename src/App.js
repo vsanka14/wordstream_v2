@@ -1,13 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import {
-	ControlPanel,
-	WordStream,
-	Loader,
-	Error,
-	BarChart,
-	Details,
-} from 'components/core';
-import { IconContainer, Button } from 'components/styled';
+import { ControlPanel, WordStream, BarChart, Details } from 'components/core';
+import { IconContainer, Button, Loader, Error } from 'components/common';
 import { IconX } from 'icons';
 
 export default function App() {
@@ -24,7 +17,7 @@ export default function App() {
 	const dimensions = useMemo(() => [1200, 800], []);
 
 	useEffect(() => {
-		if(!subGraphData) return;
+		if (!subGraphData) return;
 		setDetailsData(subGraphData[0]);
 	}, [subGraphData, setDetailsData]);
 
@@ -131,9 +124,9 @@ export default function App() {
 							{displayBarChart ? (
 								<div
 									className={`
-											w-full
-											flex flex-col md:flex-row
-										`}
+										w-full
+										flex flex-col md:flex-row
+									`}
 									style={{
 										height: '50%',
 									}}
@@ -141,9 +134,9 @@ export default function App() {
 									{subGraphData && (
 										<div
 											className={`
-														w-full md:w-1/2 h-full
-														p-2
-													`}
+												w-full md:w-1/2 h-full
+												p-2
+											`}
 										>
 											<BarChart
 												data={subGraphData}
@@ -157,9 +150,9 @@ export default function App() {
 									{detailsData && (
 										<div
 											className={`
-														w-full md:w-1/2 h-full
-														p-2
-													`}
+												w-full md:w-1/2 h-full
+												p-2
+											`}
 										>
 											<Details data={detailsData} />
 										</div>

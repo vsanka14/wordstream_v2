@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 export default function Button({ color, children, onClick, disabled, type }) {
-	const colors = {
+	const colors = useMemo(() => ({
 		green: 'bg-green-500',
 		red: 'bg-red-500',
-	};
-	const hoverColors = {
+	}), []);
+	const hoverColors = useMemo(() => ({
 		green: 'hover:bg-green-700',
 		red: 'hover:bg-red-700',
-	};
+	}), []);
 
 	return (
 		<button

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SecondaryHeading } from 'components/styled';
+import { SecondaryHeading } from 'components/common';
 import { IconBug } from 'icons';
 
 function Loader() {

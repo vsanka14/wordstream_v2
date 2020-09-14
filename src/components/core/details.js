@@ -1,5 +1,5 @@
 import React from 'react';
-import { SecondaryHeading, Card } from 'components/styled';
+import { SecondaryHeading, Card } from 'components/common';
 import { IconLike, IconDislike, IconComment } from 'icons';
 
 function Details({data}) {
