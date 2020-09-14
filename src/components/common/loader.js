@@ -6,7 +6,7 @@ function Loader() {
     <div
       className={`
 				absolute
-				inset-0
+				${`inset-0`}
 				mx-auto my-auto
 				w-16 h-16
 				text-gray-300
