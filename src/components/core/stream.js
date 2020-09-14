@@ -30,7 +30,6 @@ function WordStream({
 	const legendRef = useRef();
 	const brushRef = useRef();
 	const prevBrushRange = usePreviousValue(brushRange);
-	// const [selection, setSelection] = useState(null);
 
 	useEffect(() => {
 		const {
@@ -193,7 +192,6 @@ function WordStream({
 		>
 			<svg
                 viewBox={`0 0 ${dimensions[0]} ${dimensions[1]}`}
-                // preserveAspectRatio={`${displayBarChart ? 'none': 'xMidYMid meet'}`}
 				style={{
 					overflow: 'visible',
 					display: 'block',

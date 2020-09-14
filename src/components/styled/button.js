@@ -1,14 +1,14 @@
 import React from 'react';
 
 export default function Button({ color, children, onClick, disabled, type }) {
-    const colors = { 
-        green: 'bg-green-500',
-        red: 'bg-red-500'
-    }
-    const hoverColors = { 
-        green: 'hover:bg-green-700',
-        red: 'hover:bg-red-700'
-    }
+	const colors = {
+		green: 'bg-green-500',
+		red: 'bg-red-500',
+	};
+	const hoverColors = {
+		green: 'hover:bg-green-700',
+		red: 'hover:bg-red-700',
+	};
 
 	return (
 		<button
