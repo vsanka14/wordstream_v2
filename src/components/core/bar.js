@@ -111,7 +111,7 @@ function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
 				`}
       >
         <SecondaryHeading> Most Viewed Channels </SecondaryHeading>
-        <Paragraph> {`Between ${brushRange[0]} & ${brushRange[1]}`} </Paragraph>
+        <Paragraph> {`From ${brushRange[0]} to ${brushRange[1]}`} </Paragraph>
       </div>
       <div
         ref={wrapperRef}
