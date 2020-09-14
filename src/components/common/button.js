@@ -28,7 +28,7 @@ function Button({ color, children, onClick, disabled, type }) {
                 transition-all duration-150 ease-in-out
                 cursor-pointer
                 rounded
-                ${disabled ? 'cursor-not-allowed opacity-75' : null}
+                ${disabled ? "cursor-not-allowed opacity-75" : null}
             `}
       onClick={onClick}
       disabled={disabled}
