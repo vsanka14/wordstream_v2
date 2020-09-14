@@ -3,21 +3,19 @@ import * as d3 from 'd3';
 import { useResizeObserver } from 'hooks';
 import { SecondaryHeading, Paragraph } from 'components/styled';
 
-function Bar({ data, wordsData, brushRange }) {
+function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
 	const wrapperRef = useRef();
 	const svgRef = useRef();
-	const tooltipRef = useRef()
 	const dimensions = useResizeObserver(wrapperRef);
+	const clickedItem = useRef();
 
 	useEffect(() => {
-        if (!data || !dimensions) return;
-        console.log(`dimensions: `, dimensions);
+		if (!data || !dimensions) return;
 
 		const svg = d3.select(svgRef.current);
-		const tooltip = d3.select(tooltipRef.current);
 
-        const colorScheme = d3.scaleOrdinal([...d3.schemeSet3, ...d3.schemeDark2]);
-        const { fields } = wordsData;
+		const colorScheme = d3.scaleOrdinal([...d3.schemeSet3, ...d3.schemeDark2]);
+		const { fields } = wordsData;
 
 		const yScale = d3
 			.scaleBand()
@@ -35,29 +33,32 @@ function Bar({ data, wordsData, brushRange }) {
 			.data(data, (entry, index) => entry.id)
 			.join((enter) =>
 				enter.append('rect').attr('y', (entry, index) => yScale(index))
-				.on('mouseover', () => {
-					tooltip
-					.style('visibility', 'visible')
+				.on('click', (entry) => {
+					clickedItem.current = entry;
+					setDetailsData(entry);
 				})
-				.on('mousemove', (entry) => {
-					tooltip
-					.html(`${entry.views} views`)
-					.style('left', `${d3.event.pageX - svgRef.current.getBoundingClientRect().x + 10}px`)
-					.style('top', `${d3.event.pageY - svgRef.current.getBoundingClientRect().y + 10}px`)
+				.on('mouseover', function() {
+					d3.select(this).style('cursor', 'pointer');
+					d3.select(this).attr('fill-opacity', '0.8');
 				})
-				.on('mouseout', () => {
-					tooltip
-					.style('visibility', 'hidden')
+				.on('mouseout', function(entry) {
+					if(clickedItem.current && clickedItem.current.id !== entry.id) {
+						d3.select(this).attr('fill-opacity', '0.4');
+					}
 				})
 			)
-            .attr('fill', (entry) => colorScheme(fields.indexOf(entry.topic)))
-            .attr('fill-opacity', 0.4)
+			.attr('fill', (entry) => colorScheme(fields.indexOf(entry.topic)))
+			.attr('fill-opacity', (entry) => {
+				const selectedItem = detailsData && entry.id === detailsData.id;
+				if(selectedItem) return 0.8;
+				return 0.4;
+			})
 			.attr('class', 'bar')
 			.attr('x', 0)
 			.attr('height', yScale.bandwidth())
 			.transition()
 			.attr('width', (entry) => xScale(entry.views))
-			.attr('y', (entry, index) => yScale(index))
+			.attr('y', (entry, index) => yScale(index));
 
 		svg
 			.selectAll('.label')
@@ -65,24 +66,32 @@ function Bar({ data, wordsData, brushRange }) {
 			.join((enter) =>
 				enter
 					.append('text')
+					.on('click', (entry) => {
+						clickedItem.current = entry;
+						setDetailsData(entry);
+					})
 					.attr(
 						'y',
 						(entry, index) => yScale(index) + yScale.bandwidth() / 2 + 5
-                    )
-                    .attr('fill', (entry) => colorScheme(fields.indexOf(entry.topic)))
+					)
 			)
+			.attr('fill', (entry) => {
+				const selectedItem = detailsData && entry.id === detailsData.id;
+				if(selectedItem) return '#303030';
+				return colorScheme(fields.indexOf(entry.topic))
+			})
 			.text((entry) => `${entry.text}`)
 			.attr('class', 'label')
 			.attr('x', 10)
 			.transition()
-            .attr('y', (entry, index) => yScale(index) + yScale.bandwidth() / 2 + 5);
-            
-	}, [dimensions, data, wordsData]);
+			.attr('y', (entry, index) => yScale(index) + yScale.bandwidth() / 2 + 5);
+	}, [dimensions, data, wordsData, setDetailsData, detailsData, clickedItem]);
 
 	return (
 		<div
 			className={`
 				w-full h-full
+				flex flex-col 
 			`}
 		>
 			<div
@@ -90,11 +99,7 @@ function Bar({ data, wordsData, brushRange }) {
 					w-full 
 					flex flex-col justify-center items-center
 					p-2
-					mb-2
 				`}
-				style={{
-					height: '15%'
-				}}
 			>
 				<SecondaryHeading> Most Viewed Channels </SecondaryHeading>
 				<Paragraph> {`Between ${brushRange[0]} & ${brushRange[1]}`} </Paragraph>
@@ -102,34 +107,15 @@ function Bar({ data, wordsData, brushRange }) {
 			<div
 				ref={wrapperRef}
 				className={`
-					w-full 
+					w-full flex-1
 					relative
+					p-2
 				`}
-				style={{
-					height: '85%'
-				}}
 			>
-				<div 
-					ref={tooltipRef}
-					className={`
-						w-32 h-12
-						bg-pink-500
-						text-gray-200 text-base text-center
-						absolute
-						flex justify-center items-center
-						invisible
-						rounded
-					`}
-					style={{
-						opacity: '90%'
-					}}
-				/>
-				<svg 
+				<svg
 					ref={svgRef}
 					className={`
-						w-full
-						h-full
-						overflow-visible
+						w-full h-full
 						block
 					`}
 				/>

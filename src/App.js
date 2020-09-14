@@ -1,10 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
 	ControlPanel,
 	WordStream,
 	Loader,
 	Error,
 	BarChart,
+	Details,
 } from 'components/core';
 import { IconContainer, Button } from 'components/styled';
 import { IconX } from 'icons';
@@ -19,13 +20,18 @@ export default function App() {
 	const [error, setError] = useState(false);
 	const [brushRange, setBrushRange] = useState(null);
 	const [clearBrush, setClearBrush] = useState(false);
+	const [detailsData, setDetailsData] = useState(null);
 	const dimensions = useMemo(() => [1200, 800], []);
+
+	useEffect(() => {
+		if(!subGraphData) return;
+		setDetailsData(subGraphData[0]);
+	}, [subGraphData, setDetailsData]);
 
 	return (
 		<div
 			className={`
 					w-screen h-screen
-					bg-gray-900
 					flex flex-col md:flex-row
 				`}
 		>
@@ -47,7 +53,7 @@ export default function App() {
 			<div
 				className={`
 					relative
-					flex-1
+					flex-1 md:h-full
 					text-white
         		`}
 			>
@@ -78,7 +84,7 @@ export default function App() {
 									w-full
 								`}
 								style={{
-									height: `${displayBarChart ? '50%' : '100%'}`
+									height: `${displayBarChart ? '50%' : '100%'}`,
 								}}
 							>
 								<WordStream
@@ -96,36 +102,70 @@ export default function App() {
 								<div
 									className={`
 										absolute
-										top-0 right-0
-										w-12 h-6
+										inset-x-0 top-0
+										w-full
 										${displayBarChart ? 'visible' : 'invisible'}
+										flex justify-start md:justify-end items-center
 									`}
-								> 
-								<Button
-									color="red"
-									onClick={() => {
-										setDisplayBarChart(false);
-										setClearBrush(true);
-									}}
 								>
-									<IconContainer> <IconX> </IconX> </IconContainer> 
-								</Button>
+									<div
+										className={`
+											w-12 h-6
+										`}
+									>
+										<Button
+											color="red"
+											onClick={() => {
+												setDisplayBarChart(false);
+												setClearBrush(true);
+											}}
+										>
+											<IconContainer>
+												{' '}
+												<IconX> </IconX>{' '}
+											</IconContainer>
+										</Button>
+									</div>
 								</div>
 							</div>
-							{displayBarChart
-								? subGraphData && (
+							{displayBarChart ? (
+								<div
+									className={`
+											w-full
+											flex flex-col md:flex-row
+										`}
+									style={{
+										height: '50%',
+									}}
+								>
+									{subGraphData && (
 										<div
 											className={`
-												w-1/2
-											`}
-											style={{
-												height: '50%',
-											}}
-										> 
-											<BarChart data={subGraphData} wordsData={wordsData} brushRange={brushRange}/>
+														w-full md:w-1/2 h-full
+														p-2
+													`}
+										>
+											<BarChart
+												data={subGraphData}
+												wordsData={wordsData}
+												brushRange={brushRange}
+												setDetailsData={setDetailsData}
+												detailsData={detailsData}
+											/>
 										</div>
-								  )
-								: null}
+									)}
+									{detailsData && (
+										<div
+											className={`
+														w-full md:w-1/2 h-full
+														p-2
+													`}
+										>
+											<Details data={detailsData} />
+										</div>
+									)}
+								</div>
+							) : null}
 						</div>
 					)
 				)}

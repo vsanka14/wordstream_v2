@@ -5,3 +5,4 @@ export { default as SecondaryHeading } from './secondaryheading';
 export { default as Button } from './button';
 export { default as IconContainer } from './iconcontainer';
 export { default as Range } from './range';
+export { default as Card } from './card';

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
 	curveCardinal,
 	scaleOrdinal,
@@ -13,7 +13,6 @@ import {
 	event,
 } from 'd3';
 import { usePreviousValue } from 'hooks';
-import { Button } from 'components/styled';
 
 function WordStream({
 	rawData,

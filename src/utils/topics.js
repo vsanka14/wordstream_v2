@@ -1,7 +1,7 @@
 const topics = [
     {value: 'youtube', label: 'Youtube Trending Data'},
-    {value: 'olympicsBySports', label: 'Olympics by Sports'},
-    {value: 'olympicsByCountries', label: 'Olympics By Countries'}
+    // {value: 'olympicsBySports', label: 'Olympics by Sports'},
+    // {value: 'olympicsByCountries', label: 'Olympics By Countries'}
 ]
 const youtube = [
     {value: "Gaming", label: "Gaming"},

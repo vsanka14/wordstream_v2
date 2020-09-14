@@ -117,10 +117,10 @@ function ControlPanel({
 						options={topics}
 						onChange={(topic) => setTopic(topic)}
 						className={`
-                        basic-multi-select 
-                        cursor-pointer 
-                        text-xs md:text-base my-2
-                    `}
+							basic-multi-select 
+							cursor-pointer 
+							text-xs md:text-base my-2
+						`}
 						classNamePrefix="select"
 					/>
 				</div>
@@ -138,10 +138,10 @@ function ControlPanel({
 						value={selectedOptions}
 						onChange={(options) => setSelectedOptions(options)}
 						className={`
-                        basic-multi-select 
-                        cursor-pointer 
-                        text-xs md:text-base my-2
-                    `}
+							basic-multi-select 
+							cursor-pointer 
+							text-xs md:text-base my-2
+						`}
 						classNamePrefix="select"
 					/>
 				</div>
@@ -199,20 +199,19 @@ function ControlPanel({
 				</div>
 				<div
 					className={`
-                    w-5/12 md:w-full
-                    md:mb-6
-                `}
+						w-5/12 md:w-full
+						md:mb-6
+					`}
 				>
 					<div
 						className={`
-                        flex items-center justify-between 
-                        my-2
-                    `}
+							flex items-center justify-between 
+							my-2
+						`}
 					>
 						<Label labelFor="minFontSize" labelValue="Min Font Size" />
 						<Paragraph className="text-gray-100">
-							{' '}
-							{fields.minFontSize} px{' '}
+							{fields.minFontSize} px
 						</Paragraph>
 					</div>
 					<Range
@@ -225,9 +224,8 @@ function ControlPanel({
 				</div>
 				<Button color="green" disabled={selectedOptions ? false : true} type="submit">
 					<IconContainer>
-						{' '}
-						<IconPlane />{' '}
-					</IconContainer>{' '}
+						<IconPlane />
+					</IconContainer>
 					&nbsp;
 					<Paragraph> Submit </Paragraph>
 				</Button>

@@ -9,3 +9,6 @@ export {default as IconInfo} from './info';
 export {default as IconBug} from './bug';
 export {default as IconCircleCheck} from './circlecheck';
 export {default as IconX} from './x';
+export {default as IconLike} from './like';
+export {default as IconDislike} from './dislike';
+export {default as IconComment} from './comment';
