@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Paragraph } from '.';
 
 function Card({color, icon, data}) {
+    const colors = {
+        red: 'bg-red-500',
+        blue: 'bg-blue-500',
+        gray: 'bg-gray-500'
+    }
+
     return (
         <div
             className={`
@@ -14,7 +20,7 @@ function Card({color, icon, data}) {
                     w-full h-full
                     text-gray-100
                     flex flex-col justify-center items-center
-                    bg-${color}-500
+                    ${colors[color]}
                 `}
             >
                 <div

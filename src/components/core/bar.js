@@ -42,8 +42,15 @@ function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
 					d3.select(this).attr('fill-opacity', '0.8');
 				})
 				.on('mouseout', function(entry) {
-					if(clickedItem.current && clickedItem.current.id !== entry.id) {
-						d3.select(this).attr('fill-opacity', '0.4');
+					const selectedItem = detailsData && entry.id === detailsData.id;
+					if(selectedItem) {
+						d3.select(this).attr('fill-opacity', '0.8');
+					} else {
+						if(clickedItem.current && clickedItem.current.id === entry.id) {
+							d3.select(this).attr('fill-opacity', '0.8');
+						} else {
+							d3.select(this).attr('fill-opacity', '0.4');
+						}
 					}
 				})
 			)
