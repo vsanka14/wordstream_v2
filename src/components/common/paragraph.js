@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Paragraph({children}) {
+function Paragraph({children}) {
     return (
         <p className={`
                 block 
@@ -12,3 +12,5 @@ export default function Paragraph({children}) {
         </p>
     )
 }
+
+export default Paragraph;

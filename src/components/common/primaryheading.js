@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function PrimaryHeading({children}) {
+function PrimaryHeading({children}) {
     return (
         <h1 className={`
                 text-gray-200 text-2xl md:text-3xl lg:text-4xl 
@@ -11,3 +11,5 @@ export default function PrimaryHeading({children}) {
         </h1>
     )
 }
+
+export default  PrimaryHeading;

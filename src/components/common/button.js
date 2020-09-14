@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-export default function Button({ color, children, onClick, disabled, type }) {
+function Button({ color, children, onClick, disabled, type }) {
 	const colors = useMemo(() => ({
 		green: 'bg-green-500',
 		red: 'bg-red-500',
@@ -32,3 +32,6 @@ export default function Button({ color, children, onClick, disabled, type }) {
 		</button>
 	);
 }
+
+
+export default Button;
