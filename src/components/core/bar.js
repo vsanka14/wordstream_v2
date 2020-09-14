@@ -90,7 +90,7 @@ function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
         return colorScheme(fields.indexOf(entry.topic));
       })
       .text((entry) => `${entry.text}`)
-      .attr("class", "label")
+      .attr("class", 'label')
       .attr("x", 10)
       .transition()
       .attr("y", (entry, index) => yScale(index) + yScale.bandwidth() / 2 + 5);
@@ -116,7 +116,8 @@ function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
       <div
         ref={wrapperRef}
         className={`
-					w-full flex-1
+          w-full 
+          flex-1
 					relative
 					p-2
 				`}
