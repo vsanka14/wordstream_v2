@@ -1,18 +1,24 @@
-import React, { useMemo } from 'react';
+import React, { useMemo } from "react";
 
 function Button({ color, children, onClick, disabled, type }) {
-	const colors = useMemo(() => ({
-		green: 'bg-green-500',
-		red: 'bg-red-500',
-	}), []);
-	const hoverColors = useMemo(() => ({
-		green: 'hover:bg-green-700',
-		red: 'hover:bg-red-700',
-	}), []);
+  const colors = useMemo(
+    () => ({
+      green: "bg-green-500",
+      red: "bg-red-500",
+    }),
+    []
+  );
+  const hoverColors = useMemo(
+    () => ({
+      green: "hover:bg-green-700",
+      red: "hover:bg-red-700",
+    }),
+    []
+  );
 
-	return (
-		<button
-			className={`
+  return (
+    <button
+      className={`
                 w-full h-auto
                 ${colors[color]} ${hoverColors[color]}
                 py-3 px-4 
@@ -22,16 +28,15 @@ function Button({ color, children, onClick, disabled, type }) {
                 transition-all duration-150 ease-in-out
                 cursor-pointer
                 rounded
-                ${disabled ? 'cursor-not-allowed opacity-75' : null}
+                ${disabled ? "cursor-not-allowed opacity-75" : null}
             `}
-			onClick={onClick}
-			disabled={disabled}
-			type={type}
-		>
-			{children}
-		</button>
-	);
+      onClick={onClick}
+      disabled={disabled}
+      type={type}
+    >
+      {children}
+    </button>
+  );
 }
-
 
 export default Button;

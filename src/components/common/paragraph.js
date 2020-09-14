@@ -1,16 +1,16 @@
-import React from 'react';
+import React from "react";
 
-function Paragraph({children}) {
-    return (
-        <p className={`
+function Paragraph({ children }) {
+  return (
+    <p
+      className={`
                 block 
                 text-gray-200 text-xs md:text-base 
             `}
-        
-        >
-            {children}
-        </p>
-    )
+    >
+      {children}
+    </p>
+  );
 }
 
 export default Paragraph;

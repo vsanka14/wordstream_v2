@@ -6,12 +6,12 @@ import ResizeObserver from "resize-observer-polyfill";
  * Doesn't play well with SVG.
  */
 
-const useResizeObserver = ref => {
+const useResizeObserver = (ref) => {
   const [dimensions, setDimensions] = useState(null);
   useEffect(() => {
     const observeTarget = ref.current;
-    const resizeObserver = new ResizeObserver(entries => {
-      entries.forEach(entry => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      entries.forEach((entry) => {
         setDimensions(entry.contentRect);
       });
     });

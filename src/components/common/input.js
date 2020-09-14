@@ -1,9 +1,16 @@
-import React from 'react';
+import React from "react";
 
-export default function Input ({id, type, handleChange, value, required, errored}) {
-    return (
-        <input 
-            className={`
+export default function Input({
+  id,
+  type,
+  handleChange,
+  value,
+  required,
+  errored,
+}) {
+  return (
+    <input
+      className={`
                 shadow
                 appearance-none
                 border rounded
@@ -13,11 +20,11 @@ export default function Input ({id, type, handleChange, value, required, errored
                 focus:outline-none focus:shadow-outline
                 ${errored ? `border-red-500` : null}
             `}
-            id={id}
-            type={type}
-            onChange={handleChange}
-            value={value}
-            required={required}
-        />
-    )
+      id={id}
+      type={type}
+      onChange={handleChange}
+      value={value}
+      required={required}
+    />
+  );
 }

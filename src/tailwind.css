@@ -124,7 +124,8 @@ select {
  */
 
 button,
-input { /* 1 */
+input {
+  /* 1 */
   overflow: visible;
 }
 
@@ -134,7 +135,8 @@ input { /* 1 */
  */
 
 button,
-select { /* 1 */
+select {
+  /* 1 */
   text-transform: none;
 }
 
@@ -256,7 +258,6 @@ template {
  * Removes the default spacing and border for appropriate elements.
  */
 
-
 h1,
 p {
   margin: 0;
@@ -289,7 +290,9 @@ button:focus {
  */
 
 html {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 1 */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 1 */
   line-height: 1.5; /* 2 */
 }
 
@@ -400,9 +403,9 @@ select {
  * 'mono' font family.
  */
 
-
 code {
-  font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
 }
 
 /**
@@ -412,7 +415,6 @@ code {
  *
  * https://github.com/mozdevs/cssremedy/issues/14
  */
-
 
 svg,
 canvas {
@@ -443,40 +445,43 @@ canvas {
     opacity: 1;
   }
 
-  75%, 100% {
+  75%,
+  100% {
     transform: scale(2);
     opacity: 0;
   }
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
 
   50% {
-    opacity: .5;
+    opacity: 0.5;
   }
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(-25%);
-    -webkit-animation-timing-function: cubic-bezier(0.8,0,1,1);
-            animation-timing-function: cubic-bezier(0.8,0,1,1);
+    -webkit-animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
   }
 
   50% {
     transform: translateY(0);
-    -webkit-animation-timing-function: cubic-bezier(0,0,0.2,1);
-            animation-timing-function: cubic-bezier(0,0,0.2,1);
+    -webkit-animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
   }
 }
 
 .appearance-none {
   -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .bg-gray-500 {
@@ -825,7 +830,10 @@ canvas {
   --transform-skew-y: 0;
   --transform-scale-x: 1;
   --transform-scale-y: 1;
-  transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+  transform: translateX(var(--transform-translate-x))
+    translateY(var(--transform-translate-y)) rotate(var(--transform-rotate))
+    skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y))
+    scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
 }
 
 .transition-all {
@@ -833,7 +841,8 @@ canvas {
 }
 
 .transition {
-  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-property: background-color, border-color, color, fill, stroke,
+    opacity, box-shadow, transform;
 }
 
 .ease-in-out {
@@ -845,10 +854,12 @@ canvas {
 }
 
 @-webkit-keyframes spin {
-  from { -webkit-transform: rotate(0deg);
+  from {
+    -webkit-transform: rotate(0deg);
   }
 
-  to { -webkit-transform: rotate(359deg);
+  to {
+    -webkit-transform: rotate(359deg);
   }
 }
 
@@ -864,7 +875,7 @@ canvas {
 
 .spin-animation {
   -webkit-animation: spin 1s linear infinite;
-          animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
 body {
@@ -874,7 +885,6 @@ body {
 }
 
 @media (min-width: 768px) {
-
   .md\:flex-row {
     flex-direction: row;
   }
@@ -925,7 +935,6 @@ body {
 }
 
 @media (min-width: 1024px) {
-
   .lg\:text-lg {
     font-size: 1.125rem;
   }
@@ -944,7 +953,6 @@ body {
 }
 
 @media (min-width: 1280px) {
-
   .xl\:text-xl {
     font-size: 1.25rem;
   }

@@ -1,15 +1,15 @@
-import React from 'react';
+import React from "react";
 
-function IconContainer({children}) {
-    return (
-        <div 
-            className={`
+function IconContainer({ children }) {
+  return (
+    <div
+      className={`
                 w-6 h-6
             `}
-        >
-            {children}
-        </div>
-    )
+    >
+      {children}
+    </div>
+  );
 }
 
 export default IconContainer;

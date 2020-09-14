@@ -1,26 +1,26 @@
-import React from 'react';
-import { SecondaryHeading } from 'components/common';
-import { IconBug } from 'icons';
+import React from "react";
+import { SecondaryHeading } from "components/common";
+import { IconBug } from "icons";
 
 function Loader() {
-	return (
-		<div
-			className={`
+  return (
+    <div
+      className={`
                 h-full w-full
                 flex justify-center items-center
             `}
-		>
-			<div
-				className={`
+    >
+      <div
+        className={`
                 w-12 h-12 
                 text-red-400
             `}
-			>
-				<IconBug />
-			</div>
-			<SecondaryHeading> Something went wrong. </SecondaryHeading>
-		</div>
-	);
+      >
+        <IconBug />
+      </div>
+      <SecondaryHeading> Something went wrong. </SecondaryHeading>
+    </div>
+  );
 }
 
 export default Loader;
