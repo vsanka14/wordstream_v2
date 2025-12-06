@@ -23,7 +23,6 @@ function ControlPanel({
   const [topic, setTopic] = useState(topics[0]);
   const [options, setOptions] = useState(topicOptions["youtube"]);
   const [selectedOptions, setSelectedOptions] = useState(null);
-  const [submittedFields, setSubmittedFields] = useState(null);
 
   const [fields, handleFieldChange] = useFormFields({
     noOfTerms: "45",

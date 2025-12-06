@@ -1,19 +1,12 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useState } from "react";
 import {
   curveCardinal,
   scaleOrdinal,
   scaleBand,
   schemeDark2,
   schemeSet3,
-  select,
   area,
-  axisBottom,
-  easeQuadOut,
-  brushX,
-  event,
 } from "d3";
-
-import { usePreviousValue } from "hooks";
 
 function WordStream({
   rawData,
@@ -26,180 +19,80 @@ function WordStream({
   clearBrush,
   setClearBrush,
 }) {
-  const svgRef = useRef();
-  const axisNodesRef = useRef();
-  const legendRef = useRef();
-  const brushRef = useRef();
-  const prevBrushRange = usePreviousValue(brushRange);
-  const rafRef = useRef(null);
+  const [brushSelection, setBrushSelection] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState(null);
 
-  // Memoized scale band inverter to avoid recreating on each render
-  const scaleBandInvert = useCallback((scale) => {
-    const domain = scale.domain();
-    const paddingOuter = scale(domain[0]);
-    const eachBand = scale.step();
-    return function (value) {
-      const index = Math.floor((value - paddingOuter) / eachBand);
-      return domain[Math.max(0, Math.min(index, domain.length - 1))];
-    };
-  }, []);
+  const { streamSizeScale, stackedLayers, boxWidth, fields, allWords, dates } =
+    wordsData;
 
-  useEffect(() => {
-    // Cancel any pending animation frame on cleanup or re-run
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-    }
+  // D3 calculations only - no DOM manipulation
+  const xAxisScale = scaleBand().domain(dates).range([0, dimensions[0]]);
 
-    const {
-      streamSizeScale,
-      stackedLayers,
-      boxWidth,
-      fields,
-      allWords,
-      dates,
-    } = wordsData;
+  const colorScheme = scaleOrdinal([...schemeSet3, ...schemeDark2]);
 
-    const svg = select(svgRef.current);
-    const axisNodes = select(axisNodesRef.current);
-    const legend = select(legendRef.current);
-    const brushNode = select(brushRef.current);
+  const areaFn = area()
+    .curve(curveCardinal)
+    .x((d, i) => i * boxWidth)
+    .y0((d) => streamSizeScale(d[0]))
+    .y1((d) => streamSizeScale(d[1]));
 
-    const xAxisScale = scaleBand().domain(dates).range([0, dimensions[0]]);
-    axisNodes.call(axisBottom(xAxisScale));
-    axisNodes
-      .selectAll("text")
-      .attr("stroke", "white")
-      .attr("stroke-width", 0.5);
-    axisNodes.attr("transform", `translate(0, ${dimensions[1] - 100})`);
+  // Generate axis ticks
+  const axisTicks = dates.map((date) => ({
+    date,
+    x: xAxisScale(date) + xAxisScale.bandwidth() / 2,
+  }));
 
-    const colorScheme = scaleOrdinal([...schemeSet3, ...schemeDark2]);
-    const areaFn = area()
-      .curve(curveCardinal)
-      .x((d, i) => i * boxWidth)
-      .y0((d) => streamSizeScale(d[0]))
-      .y1((d) => streamSizeScale(d[1]));
+  // Generate path data for curves
+  const curvePaths = stackedLayers.map((layer, i) => ({
+    id: fields[i],
+    path: areaFn(layer),
+    color: colorScheme(i),
+  }));
 
-    // Batch DOM updates using requestAnimationFrame for smoother rendering
-    rafRef.current = requestAnimationFrame(() => {
-      // Update legend - clear and rebuild
-      legend.selectAll("*").remove();
-      legend.attr("transform", `translate(${dimensions[0] - 150}, 20)`);
-      const legendSelection = legend
-        .selectAll(".legendNode")
-        .data(fields, (d) => d);
+  // Handle brush interactions
+  const handleMouseDown = (e) => {
+    const svg = e.currentTarget;
+    const rect = svg.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    setIsDragging(true);
+    setDragStart(x);
+    setBrushSelection([x, x]);
+  };
 
-      legendSelection
-        .join("circle")
-        .attr("r", 5)
-        .attr("cy", (d, i) => i * 20)
-        .attr("fill", (d, i) => colorScheme(i))
-        .attr("fill-opacity", 1)
-        .attr("stroke", "white")
-        .attr("stroke-width", 0.5);
+  const handleMouseMove = (e) => {
+    if (!isDragging || dragStart === null) return;
+    const svg = e.currentTarget;
+    const rect = svg.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    setBrushSelection([Math.min(dragStart, x), Math.max(dragStart, x)]);
+  };
 
-      legendSelection
-        .join("text")
-        .text((d) => d)
-        .attr("y", (d, i) => i * 20 + 3)
-        .attr("font-size", 10)
-        .attr("alignment-baseling", "middle")
-        .attr("stroke", "white")
-        .attr("dx", 10);
-
-      // Update curves with optimized transitions
-      svg
-        .selectAll(".curve")
-        .data(stackedLayers)
-        .join("path")
-        .attr("class", "curve")
-        .transition()
-        .attr("d", areaFn)
-        .ease(easeQuadOut)
-        .duration(250)
-        .attr("fill-opacity", 0.4)
-        .attr("stroke-width", 0)
-        .attr("stroke", "white")
-        .attr("topic", (d, i) => fields[i])
-        .style("fill", (d, i) => colorScheme(i));
-
-      // Update words with optimized enter/update/exit pattern
-      svg
-        .selectAll(".word")
-        .data(allWords, (d) => d.id)
-        .join(
-          (enter) =>
-            enter
-              .append("g")
-              .attr("class", "word")
-              .style("will-change", "transform")
-              .attr(
-                "transform",
-                (d) => `translate(${d.x}, ${d.y}) rotate(${d.rotate})`
-              )
-              .append("text")
-              .text((d) => d.text)
-              .attr("id", (d) => d.id)
-              .attr("font-family", "Arial")
-              .attr("font-size", (d) => d.fontSize)
-              .attr("fill", (d) => colorScheme(fields.indexOf(d.topic)))
-              .attr("fill-opacity", 1)
-              .attr("text-anchor", "middle")
-              .attr("topic", (d) => d.topic)
-              .attr("display", (d) => (d.placed ? "block" : "none")),
-          (update) =>
-            update
-              .transition()
-              .attr(
-                "transform",
-                (d) => `translate(${d.x}, ${d.y}) rotate(${d.rotate})`
-              )
-              .ease(easeQuadOut)
-              .duration(250)
-              .select("text")
-              .attr("topic", (d) => d.topic)
-              .attr("fill", (d) => colorScheme(fields.indexOf(d.topic)))
-              .attr("font-size", function (d) {
-                return d.fontSize;
-              })
-              .attr("display", (d) => (d.placed ? "block" : "none")),
-          (exit) => exit.remove()
-        );
-    });
-    const brush = brushX()
-      .extent([
-        [0, 0],
-        [dimensions[0], dimensions[1] - 100],
-      ])
-      .on("end", () => {
-        if (event.selection) {
-          const dRangeX = event.selection.map(scaleBandInvert(xAxisScale));
-          setBrushRange(dRangeX);
-        }
-      });
-    brushNode.call(brush);
-    if (clearBrush) {
-      brushNode.call(brush.move, null);
-    }
-
-    // Cleanup function to cancel pending animation frames
-    return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-    };
-  }, [wordsData, dimensions, setBrushRange, clearBrush, scaleBandInvert]);
-
-  useEffect(() => {
-    if (!rawData || !brushRange) return;
-    if (
-      prevBrushRange &&
-      prevBrushRange[0] === brushRange[0] &&
-      prevBrushRange[1] === brushRange[1]
-    )
+  const handleMouseUp = () => {
+    if (!isDragging || !brushSelection) {
+      setIsDragging(false);
       return;
-    const selectedData = rawData.filter((item) =>
-      brushRange.includes(item.date)
-    );
+    }
+
+    setIsDragging(false);
+
+    // Convert pixel positions to dates
+    const [x0, x1] = brushSelection;
+    const domain = xAxisScale.domain();
+    const paddingOuter = xAxisScale(domain[0]);
+    const eachBand = xAxisScale.step();
+
+    const index0 = Math.floor((x0 - paddingOuter) / eachBand);
+    const index1 = Math.floor((x1 - paddingOuter) / eachBand);
+
+    const startDate = domain[Math.max(0, Math.min(index0, domain.length - 1))];
+    const endDate = domain[Math.max(0, Math.min(index1, domain.length - 1))];
+
+    const dRangeX = [startDate, endDate];
+    setBrushRange(dRangeX);
+
+    // Process brush selection
+    const selectedData = rawData.filter((item) => dRangeX.includes(item.date));
     let words = [];
     selectedData.forEach((item) => {
       Object.values(item.words).forEach((arr) => words.push(...arr));
@@ -209,14 +102,13 @@ function WordStream({
     setSubGraphData(words);
     setDisplayBarChart(true);
     setClearBrush(false);
-  }, [
-    setSubGraphData,
-    rawData,
-    brushRange,
-    setDisplayBarChart,
-    prevBrushRange,
-    setClearBrush,
-  ]);
+  };
+
+  // Clear brush when requested
+  if (clearBrush && brushSelection) {
+    setBrushSelection(null);
+    setClearBrush(false);
+  }
 
   return (
     <div className="w-full h-full">
@@ -227,12 +119,129 @@ function WordStream({
           display: "block",
           width: "100%",
           height: "100%",
+          cursor: isDragging ? "col-resize" : "crosshair",
         }}
-        ref={svgRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={() => isDragging && handleMouseUp()}
       >
-        <g ref={axisNodesRef} />
-        <g ref={legendRef} />
-        <g ref={brushRef} />
+        {/* Render curves */}
+        {curvePaths.map((curve) => (
+          <path
+            key={curve.id}
+            d={curve.path}
+            fill={curve.color}
+            fillOpacity={0.4}
+            stroke="white"
+            strokeWidth={0}
+            style={{
+              transition: "d 250ms ease-out, fill 250ms ease-out",
+            }}
+          />
+        ))}
+
+        {/* Render words */}
+        {allWords
+          .filter((word) => word.placed)
+          .map((word) => (
+            <g
+              key={word.id}
+              transform={`translate(${word.x}, ${word.y}) rotate(${word.rotate})`}
+              style={{
+                transition: "transform 250ms ease-out",
+                willChange: "transform",
+              }}
+            >
+              <text
+                fontFamily="Arial"
+                fontSize={word.fontSize}
+                fill={colorScheme(fields.indexOf(word.topic))}
+                fillOpacity={1}
+                textAnchor="middle"
+                style={{
+                  transition: "font-size 250ms ease-out, fill 250ms ease-out",
+                }}
+              >
+                {word.text}
+              </text>
+            </g>
+          ))}
+
+        {/* Render axis */}
+        <g transform={`translate(0, ${dimensions[1] - 100})`}>
+          <line
+            x1={0}
+            x2={dimensions[0]}
+            y1={0}
+            y2={0}
+            stroke="currentColor"
+            strokeWidth={1}
+          />
+          {axisTicks.map((tick) => (
+            <g key={tick.date} transform={`translate(${tick.x}, 0)`}>
+              <line
+                x1={0}
+                x2={0}
+                y1={0}
+                y2={6}
+                stroke="currentColor"
+                strokeWidth={1}
+              />
+              <text
+                y={9}
+                dy="0.71em"
+                textAnchor="middle"
+                fontSize={10}
+                stroke="white"
+                strokeWidth={0.5}
+                fill="white"
+              >
+                {tick.date}
+              </text>
+            </g>
+          ))}
+        </g>
+
+        {/* Render legend */}
+        <g transform={`translate(${dimensions[0] - 150}, 20)`}>
+          {fields.map((field, i) => (
+            <g key={field}>
+              <circle
+                r={5}
+                cy={i * 20}
+                fill={colorScheme(i)}
+                fillOpacity={1}
+                stroke="white"
+                strokeWidth={0.5}
+              />
+              <text
+                y={i * 20 + 3}
+                dx={10}
+                fontSize={10}
+                fill="white"
+                stroke="white"
+                strokeWidth={0.3}
+              >
+                {field}
+              </text>
+            </g>
+          ))}
+        </g>
+
+        {/* Render brush selection overlay */}
+        {brushSelection && (
+          <rect
+            x={brushSelection[0]}
+            y={0}
+            width={brushSelection[1] - brushSelection[0]}
+            height={dimensions[1] - 100}
+            fill="rgba(128, 128, 128, 0.3)"
+            stroke="white"
+            strokeWidth={1}
+            pointerEvents="none"
+          />
+        )}
       </svg>
     </div>
   );
