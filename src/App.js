@@ -185,7 +185,8 @@ export default function App() {
                 <div
                   className="w-full"
                   style={{
-                    height: `${displayBarChart ? "50%" : "100%"}`,
+                    height: displayBarChart ? "65%" : "100%",
+                    transition: "height 300ms ease-out",
                   }}
                 >
                   <WordStream
@@ -201,12 +202,12 @@ export default function App() {
                     setClearBrush={setClearBrush}
                   />
                 </div>
-                {displayBarChart ? (
+                {displayBarChart && (
                   <div
                     className="w-full flex flex-col md:flex-row relative border-t-2 border-gray-600 bg-gray-800 bg-opacity-50 rounded-lg mr-8"
                     style={{
-                      height: "45%",
-                      minHeight: "250px",
+                      height: "35%",
+                      minHeight: "180px",
                     }}
                   >
                     {/* Close button - positioned at top right of detail section */}
@@ -235,7 +236,7 @@ export default function App() {
                       {detailsData && <Details data={detailsData} />}
                     </div>
                   </div>
-                ) : null}
+                )}
               </div>
             ) : (
               <div className="flex-1 flex items-center justify-center">

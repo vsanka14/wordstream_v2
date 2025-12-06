@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import * as d3 from "d3";
 import { useResizeObserver } from "hooks";
-import { SecondaryHeading, Paragraph } from "components/common";
 
 function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
   const wrapperRef = useRef();
@@ -92,9 +91,11 @@ function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="w-full flex flex-col justify-center items-center p-2">
-        <SecondaryHeading> Most Viewed Channels </SecondaryHeading>
-        <Paragraph> {`From ${brushRange[0]} to ${brushRange[1]}`} </Paragraph>
+      <div className="w-full flex justify-center items-center p-1 gap-2">
+        <h3 className="text-gray-200 text-sm md:text-base font-semibold">
+          Most Viewed Channels
+        </h3>
+        <span className="text-gray-400 text-xs">{`(${brushRange[0]} - ${brushRange[1]})`}</span>
       </div>
       <div ref={wrapperRef} className="w-full flex-1 relative p-2">
         <svg ref={svgRef} className="w-full h-full block" />
