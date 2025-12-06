@@ -6,13 +6,13 @@ A React application for visualizing word streams from large datasets. **No backe
 
 ## Data Setup
 
-Before running the app, compress your JSON data files:
+The app uses pre-compressed JSON data files located in `public/data/`. If you need to add new data files:
 
-```bash
-npm run compress-data
-```
+1. Place your large JSON files in the project root
+2. Update `scripts/compress-data.js` to include your new files
+3. Run: `npm run compress-data`
 
-This will compress large JSON files (like youtube_py.json) and place them in `public/data/` for efficient loading.
+This will compress large JSON files and place them in `public/data/` for efficient loading.
 
 ## Available Scripts
 
