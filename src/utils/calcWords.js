@@ -72,7 +72,8 @@ export default function calcWords(props) {
       y = 0,
       maxh = 0;
     for (let i = 0; i < data.length; i++) {
-      fields.forEach((field) => {
+      for (let fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
+        const field = fields[fieldIndex];
         var words = data[i].words[field];
         var n = words.length;
         var di = -1;
@@ -112,24 +113,25 @@ export default function calcWords(props) {
           d.streamHeight = streamSizeScale(d.frequency);
           x += w;
         }
-      });
+      }
     }
 
     for (var bc = 0; bc < data.length; bc++) {
-      fields.forEach((field) => {
-        var words = data[bc].words[field];
-        var n = words.length;
-        var di = -1;
-        var d = {};
-        while (++di < n) {
-          d = words[di];
-          var pixels = c.getImageData(d.x, d.y, d.width, d.height).data;
-          d.sprite = [];
-          for (var i = 0; i << 2 < pixels.length; i++) {
-            d.sprite.push(pixels[i << 2]);
+      for (let fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
+        const field = fields[fieldIndex];
+        var words2 = data[bc].words[field];
+        var n2 = words2.length;
+        var di2 = -1;
+        var d2 = {};
+        while (++di2 < n2) {
+          d2 = words2[di2];
+          var pixels = c.getImageData(d2.x, d2.y, d2.width, d2.height).data;
+          d2.sprite = [];
+          for (var i2 = 0; i2 << 2 < pixels.length; i2++) {
+            d2.sprite.push(pixels[i2 << 2]);
           }
         }
-      });
+      }
     }
   }
 
