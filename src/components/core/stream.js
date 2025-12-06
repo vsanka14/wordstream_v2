@@ -173,31 +173,13 @@ function WordStream({
       selectedDates.includes(item.date)
     );
 
-    console.log("Selected dates:", selectedDates);
-    console.log("Selected data items:", selectedData.length);
-    console.log("First item structure:", selectedData[0]);
-
     let words = [];
     selectedData.forEach((item) => {
       Object.values(item.words).forEach((arr) => words.push(...arr));
     });
 
-    console.log("Total words before sort:", words.length);
-    console.log(
-      "Words by topic:",
-      words.reduce((acc, w) => {
-        acc[w.topic] = (acc[w.topic] || 0) + 1;
-        return acc;
-      }, {})
-    );
-
     words.sort((a, b) => b.views - a.views);
     words = words.slice(0, 10);
-
-    console.log(
-      "Top 10 words:",
-      words.map((w) => ({ text: w.text, topic: w.topic, views: w.views }))
-    );
 
     setSubGraphData(words);
     setDisplayBarChart(true);

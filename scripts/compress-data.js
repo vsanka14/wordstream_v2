@@ -29,8 +29,6 @@ jsonFiles.forEach(({ input, output }) => {
   const outputPath = path.join(__dirname, "..", output);
 
   try {
-    console.log(`Processing ${input}...`);
-
     // Check if input file exists
     if (!fs.existsSync(inputPath)) {
       console.warn(`Warning: ${input} not found. Skipping...`);
@@ -52,20 +50,7 @@ jsonFiles.forEach(({ input, output }) => {
       (1 - compressedSize / originalSize) *
       100
     ).toFixed(2);
-
-    console.log(`✓ ${input} compressed successfully:`);
-    console.log(
-      `  Original size: ${(originalSize / 1024 / 1024).toFixed(2)} MB`
-    );
-    console.log(
-      `  Compressed size: ${(compressedSize / 1024 / 1024).toFixed(2)} MB`
-    );
-    console.log(`  Compression ratio: ${compressionRatio}%`);
-    console.log(`  Output: ${output}`);
-    console.log("");
   } catch (error) {
     console.error(`Error processing ${input}:`, error.message);
   }
 });
-
-console.log("Compression complete!");

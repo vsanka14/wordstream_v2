@@ -56,8 +56,6 @@ function useStaticData(callbacks = {}) {
           // Use the static data loader instead of making API call
           const filteredData = await getTopTerms(params);
 
-          console.log("Filtered data:", filteredData);
-
           dispatch({
             type: "FETCH_SUCCESS",
             payload: filteredData,
