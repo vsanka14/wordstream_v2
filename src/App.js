@@ -191,7 +191,7 @@ export default function App() {
                     )}
                   >
                     {displayBarChart && (
-                      <div className="w-12 h-6">
+                      <div className="w-12 h-6 absolute top-0 mr-2 z-50">
                         <Button
                           color="red"
                           onClick={() => {
