@@ -7,7 +7,6 @@ import {
   IconContainer,
 } from "components/common";
 import Select from "react-select";
-import cx from "classnames";
 import { useFormFields, useStaticData } from "hooks";
 import { IconPlane } from "icons";
 import { selectTopics, calcLayers } from "utils";
@@ -92,30 +91,23 @@ function ControlPanel({
   }, [loading, error, setLoading, setError]);
 
   return (
-    <div className={cx("w-full h-full", "p-4")}>
+    <div className="w-full h-full p-4">
       <form
-        className={cx(
-          "w-full h-full",
-          "flex flex-row md:flex-col flex-wrap justify-between md:justify-evenly items-center"
-        )}
+        className="w-full h-full flex flex-row md:flex-col flex-wrap justify-between md:justify-evenly items-center"
         onSubmit={handleFormSubmit}
       >
-        <div className={cx("w-full", "md:mb-6")}>
+        <div className="w-full md:mb-6">
           <Label labelFor="topics" labelValue="Topics" />
           <Select
             value={topic}
             name="topics"
             options={topics}
             onChange={(topic) => setTopic(topic)}
-            className={cx(
-              "basic-multi-select",
-              "cursor-pointer",
-              "text-xs md:text-base my-2"
-            )}
+            className="basic-multi-select cursor-pointer text-xs md:text-base my-2"
             classNamePrefix="select"
           />
         </div>
-        <div className={cx("w-full", "md:mb-6")}>
+        <div className="w-full md:mb-6">
           <Label labelFor="options" labelValue="Options" />
           <Select
             isMulti
@@ -123,16 +115,12 @@ function ControlPanel({
             options={options}
             value={selectedOptions}
             onChange={(options) => setSelectedOptions(options)}
-            className={cx(
-              "basic-multi-select",
-              "cursor-pointer",
-              "text-xs md:text-base my-2"
-            )}
+            className="basic-multi-select cursor-pointer text-xs md:text-base my-2"
             classNamePrefix="select"
           />
         </div>
-        <div className={cx("w-5/12 md:w-full", "md:mb-6")}>
-          <div className={cx("flex items-center justify-between", "my-2")}>
+        <div className="w-5/12 md:w-full md:mb-6">
+          <div className="flex items-center justify-between my-2">
             <Label labelFor="noOfTerms" labelValue="Terms" />
             <Paragraph className="text-gray-100">
               {" "}
@@ -147,8 +135,8 @@ function ControlPanel({
             max="100"
           />
         </div>
-        <div className={cx("w-5/12 md:w-full", "md:mb-6")}>
-          <div className={cx("flex items-center justify-between", "my-2")}>
+        <div className="w-5/12 md:w-full md:mb-6">
+          <div className="flex items-center justify-between my-2">
             <Label labelFor="maxFontSize" labelValue="Max Font Size" />
             <Paragraph className="text-gray-100">
               {" "}
@@ -163,8 +151,8 @@ function ControlPanel({
             max="100"
           />
         </div>
-        <div className={cx("w-5/12 md:w-full", "md:mb-6")}>
-          <div className={cx("flex items-center justify-between", "my-2")}>
+        <div className="w-5/12 md:w-full md:mb-6">
+          <div className="flex items-center justify-between my-2">
             <Label labelFor="minFontSize" labelValue="Min Font Size" />
             <Paragraph className="text-gray-100">
               {fields.minFontSize} px

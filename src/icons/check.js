@@ -1,10 +1,9 @@
 import React from "react";
-import cx from "classnames";
 
 const check = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className={cx("h-full w-full", "stroke-current")}
+    className="h-full w-full stroke-current"
     viewBox="0 0 24 24"
     strokeWidth="2"
     fill="none"

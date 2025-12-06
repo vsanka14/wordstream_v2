@@ -1,21 +1,14 @@
 import React from "react";
-import cx from "classnames";
 import { SecondaryHeading, Card } from "components/common";
 import { IconLike, IconDislike, IconComment } from "icons";
 
 function Details({ data }) {
   return (
-    <div className={cx("w-full h-full", "flex flex-col")}>
+    <div className="w-full h-full flex flex-col">
       <div>
         <SecondaryHeading>{data.text}</SecondaryHeading>
       </div>
-      <div
-        className={cx(
-          "h-full",
-          "flex justify-around items-center",
-          "text-left"
-        )}
-      >
+      <div className="h-full flex justify-around items-center text-left">
         <Card color="blue" icon={IconLike} data={`${data.likes} Likes`} />
         <Card
           color="red"

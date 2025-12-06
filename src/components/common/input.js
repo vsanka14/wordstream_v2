@@ -12,13 +12,7 @@ export default function Input({
   return (
     <input
       className={cx(
-        "shadow",
-        "appearance-none",
-        "border rounded",
-        "w-full",
-        "py-3 px-3",
-        "text-gray-700 text-sm md:text-base lg:text-lg xl:text-xl",
-        "focus:outline-none focus:shadow-outline",
+        "shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 text-sm md:text-base lg:text-lg xl:text-xl focus:outline-none focus:shadow-outline",
         {
           "border-red-500": errored,
         }

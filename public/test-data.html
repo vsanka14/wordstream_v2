@@ -43,9 +43,7 @@
             resultsDiv.innerHTML = 'Loading...';
             
             try {
-                console.log('Testing data loading...');
                 const rawData = await loadCompressedData('youtube');
-                console.log('Data loaded successfully:', rawData);
                 
                 resultsDiv.innerHTML = `
                     <h3>Success!</h3>

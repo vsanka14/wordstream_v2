@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from "react";
 import * as d3 from "d3";
-import cx from "classnames";
 import { useResizeObserver } from "hooks";
 import { SecondaryHeading, Paragraph } from "components/common";
 
@@ -98,22 +97,13 @@ function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
   }, [dimensions, data, wordsData, setDetailsData, detailsData, clickedItem]);
 
   return (
-    <div className={cx("w-full h-full", "flex flex-col")}>
-      <div
-        className={cx(
-          "w-full",
-          "flex flex-col justify-center items-center",
-          "p-2"
-        )}
-      >
+    <div className="w-full h-full flex flex-col">
+      <div className="w-full flex flex-col justify-center items-center p-2">
         <SecondaryHeading> Most Viewed Channels </SecondaryHeading>
         <Paragraph> {`From ${brushRange[0]} to ${brushRange[1]}`} </Paragraph>
       </div>
-      <div
-        ref={wrapperRef}
-        className={cx("w-full", "flex-1", "relative", "p-2")}
-      >
-        <svg ref={svgRef} className={cx("w-full h-full", "block")} />
+      <div ref={wrapperRef} className="w-full flex-1 relative p-2">
+        <svg ref={svgRef} className="w-full h-full block" />
       </div>
     </div>
   );

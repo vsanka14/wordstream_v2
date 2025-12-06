@@ -13,7 +13,7 @@ function Card({ color, icon, data }) {
   );
 
   return (
-    <div className={cx("w-full h-full", "px-2 py-5")}>
+    <div className="w-full h-full px-2 py-5">
       <div
         className={cx(
           "w-full h-full",
@@ -22,9 +22,9 @@ function Card({ color, icon, data }) {
           colors[color]
         )}
       >
-        <div className={cx("w-16 h-16")}>{icon()}</div>
+        <div className="w-16 h-16">{icon()}</div>
         <Paragraph>
-          <span className={cx("font-semibold")}>{data}</span>
+          <span className="font-semibold">{data}</span>
         </Paragraph>
       </div>
     </div>
