@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef, useCallback } from "react";
+import { useClickOutside } from "hooks";
 
 function Tooltip({
   isOpen,
@@ -11,59 +12,35 @@ function Tooltip({
 }) {
   const tooltipRef = useRef(null);
 
-  // Handle click outside to close
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside = (event) => {
-      // Don't close if clicking on the trigger button or inside the tooltip
-      if (
-        triggerRef?.current?.contains(event.target) ||
-        tooltipRef?.current?.contains(event.target)
-      ) {
+  // Handle click outside to close (excluding trigger button)
+  const handleClickOutside = useCallback(
+    (event) => {
+      // Don't close if clicking on the trigger button
+      if (triggerRef?.current?.contains(event.target)) {
         return;
       }
-      onClose();
-    };
-
-    // Handle escape key
-    const handleEscape = (event) => {
-      if (event.key === "Escape") {
+      if (isOpen) {
         onClose();
       }
-    };
+    },
+    [isOpen, onClose, triggerRef]
+  );
 
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscape);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [isOpen, onClose, triggerRef]);
-
-  // Focus management
-  useEffect(() => {
-    if (isOpen && tooltipRef.current) {
-      // Focus the tooltip when it opens for screen readers
-      tooltipRef.current.focus();
-    }
-  }, [isOpen]);
+  useClickOutside(tooltipRef, handleClickOutside);
 
   if (!isOpen) return null;
 
   return (
-    <div className="absolute left-1/2 transform -translate-x-1/2 top-8 z-50">
+    <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 z-50">
       <div
         ref={tooltipRef}
         role="tooltip"
         aria-live="polite"
         aria-describedby={ariaDescribedBy}
         tabIndex={0}
-        className="relative bg-gray-900 text-white text-sm rounded-lg shadow-xl text-center border border-gray-800 animate-fade-in focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="bg-gray-900 text-white text-sm rounded-lg shadow-xl text-left border border-gray-800 animate-fade-in focus:outline-none focus:ring-2 focus:ring-blue-500"
         style={{
-          width: "400px",
-          minWidth: "400px",
+          width: "300px",
           maxWidth: "90vw",
         }}
       >
