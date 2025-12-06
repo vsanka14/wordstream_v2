@@ -91,7 +91,7 @@ function ControlPanel({
   }, [loading, error, setLoading, setError]);
 
   return (
-    <div className="w-full h-full p-4">
+    <div className="w-full h-screen p-4">
       <form
         className="w-full h-full flex flex-row md:flex-col flex-wrap justify-between md:justify-evenly items-center"
         onSubmit={handleFormSubmit}

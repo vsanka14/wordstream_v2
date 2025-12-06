@@ -32,7 +32,7 @@ export default function App() {
   }, [subGraphData, setDetailsData]);
 
   return (
-    <div className="w-screen h-screen flex flex-col md:flex-row relative">
+    <div className="w-screen min-h-screen flex flex-col md:flex-row relative">
       {/* Sidebar Toggle Button - positioned absolutely at top-left of viewport */}
       <div className="fixed top-2 left-2 z-40 w-12 h-12">
         <button
@@ -49,10 +49,10 @@ export default function App() {
       {!sidebarCollapsed && (
         <div
           className={cx(
-            "absolute md:relative z-20",
-            "md:h-full transition-all duration-300 ease-in-out",
-            "bg-gray-800 shadow-lg",
-            "w-3/4 h-full md:w-1/4 lg:w-1/5"
+            "fixed md:sticky md:top-0 z-20",
+            "h-screen md:h-screen transition-all duration-300 ease-in-out",
+            "bg-gray-800 shadow-lg overflow-y-auto",
+            "w-3/4 md:w-1/4 lg:w-1/5"
           )}
         >
           <ControlPanel
@@ -75,14 +75,14 @@ export default function App() {
       )}
 
       {/* Main Content */}
-      <div className="relative text-white transition-all duration-300 ease-in-out flex-1 md:h-full w-full h-full">
+      <div className="relative text-white transition-all duration-300 ease-in-out flex-1 min-h-screen w-full">
         {loading || wordStreamProcessing ? (
           <>
             <div className="absolute inset-0 h-full w-full bg-gray-600 opacity-25" />
             <Loader />
           </>
         ) : null}
-        <div className="w-full h-full flex flex-col">
+        <div className="w-full min-h-screen flex flex-col">
           {/* Title and Info Section */}
           <div className="flex justify-center items-center py-4 px-4 flex-shrink-0">
             <div className="flex items-center space-x-3">
@@ -129,11 +129,17 @@ export default function App() {
           </div>
 
           {/* Content Area */}
-          <div className="flex-1 flex flex-col justify-center items-center">
+          <div
+            className="flex-1 flex flex-col justify-center items-center"
+            style={{ minHeight: "calc(100vh - 100px)" }}
+          >
             {error ? (
               <Error />
             ) : wordsData ? (
-              <div className="w-full h-full flex flex-col justify-center items-center">
+              <div
+                className="w-full flex flex-col justify-center items-center"
+                style={{ height: "calc(100vh - 100px)" }}
+              >
                 <div
                   className="w-full"
                   style={{
@@ -188,6 +194,7 @@ export default function App() {
                     className="w-full flex flex-col md:flex-row"
                     style={{
                       height: "50%",
+                      minHeight: "300px",
                     }}
                   >
                     {subGraphData && (
