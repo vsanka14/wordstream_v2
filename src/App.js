@@ -39,7 +39,7 @@ export default function App() {
       {/* Sidebar Toggle Button - positioned absolutely at top-left of viewport */}
       <div className="fixed top-2 left-2 z-40 w-12 h-12">
         <button
-          className="w-full h-full hover:bg-gray-600 hover:bg-opacity-30 text-white rounded-lg focus:outline-none transition-all duration-200 ease-in-out flex items-center justify-center"
+          className="w-full h-full hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 rounded-lg focus:outline-none transition-all duration-200 ease-in-out flex items-center justify-center"
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
         >
           <div className="w-6 h-6">
@@ -53,7 +53,7 @@ export default function App() {
         className={cx(
           "fixed z-20",
           "h-screen",
-          "bg-gray-800 shadow-lg overflow-hidden",
+          "bg-gray-900 shadow-lg overflow-hidden border-r border-gray-800",
           "w-3/4 md:w-1/4 lg:w-1/5"
         )}
         style={{
@@ -101,7 +101,7 @@ export default function App() {
       >
         {loading || wordStreamProcessing ? (
           <>
-            <div className="absolute inset-0 h-full w-full bg-gray-600 opacity-25" />
+            <div className="absolute inset-0 h-full w-full bg-black opacity-50" />
             <Loader />
           </>
         ) : null}
@@ -115,7 +115,7 @@ export default function App() {
               <div className="relative">
                 <button
                   ref={tooltipTriggerRef}
-                  className={`w-5 h-5 md:w-6 md:h-6 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 rounded ${
+                  className={`w-5 h-5 md:w-6 md:h-6 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 rounded ${
                     showTooltip
                       ? "text-white"
                       : "text-gray-400 hover:text-white"
@@ -184,7 +184,7 @@ export default function App() {
                 </div>
                 {displayBarChart && (
                   <div
-                    className="w-full flex flex-col md:flex-row border-t-2 border-gray-600 bg-gray-800 bg-opacity-50 rounded-lg mr-12"
+                    className="w-full flex flex-col md:flex-row border-t-2 border-gray-700 bg-gray-900 bg-opacity-95 rounded-lg mr-12"
                     style={{
                       height: "35%",
                       minHeight: "180px",

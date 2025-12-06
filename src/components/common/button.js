@@ -4,9 +4,10 @@ import cx from "classnames";
 function Button({ color, children, onClick, disabled, type }) {
   const colors = useMemo(
     () => ({
-      green: "bg-green-500",
-      red: "bg-red-500",
+      green: "bg-green-600",
+      red: "bg-red-600",
       blue: "bg-blue-600",
+      gray: "bg-gray-600",
     }),
     []
   );
@@ -15,6 +16,7 @@ function Button({ color, children, onClick, disabled, type }) {
       green: "hover:bg-green-700",
       red: "hover:bg-red-700",
       blue: "hover:bg-blue-700",
+      gray: "hover:bg-gray-700",
     }),
     []
   );

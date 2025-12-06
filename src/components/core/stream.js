@@ -31,6 +31,7 @@ function WordStream({
   // D3 calculations only - no DOM manipulation
   const xAxisScale = scaleBand().domain(dates).range([0, dimensions[0]]);
 
+  // Use original D3 color schemes with better contrast for dark backgrounds
   const colorScheme = scaleOrdinal([...schemeSet3, ...schemeDark2]);
 
   const areaFn = area()
@@ -207,9 +208,10 @@ function WordStream({
             key={curve.id}
             d={curve.path}
             fill={curve.color}
-            fillOpacity={0.4}
-            stroke="white"
-            strokeWidth={0}
+            fillOpacity={0.65}
+            stroke={curve.color}
+            strokeWidth={1}
+            strokeOpacity={0.8}
             style={{
               transition: "d 250ms ease-out, fill 250ms ease-out",
             }}
@@ -231,11 +233,15 @@ function WordStream({
               <text
                 fontFamily="Arial"
                 fontSize={word.fontSize}
-                fill={colorScheme(fields.indexOf(word.topic))}
+                fill="white"
                 fillOpacity={1}
                 textAnchor="middle"
+                stroke={colorScheme(fields.indexOf(word.topic))}
+                strokeWidth={0.5}
                 style={{
-                  transition: "font-size 250ms ease-out, fill 250ms ease-out",
+                  transition: "font-size 250ms ease-out",
+                  fontWeight: "600",
+                  paintOrder: "stroke fill",
                 }}
               >
                 {word.text}
@@ -250,8 +256,8 @@ function WordStream({
             x2={dimensions[0]}
             y1={0}
             y2={0}
-            stroke="currentColor"
-            strokeWidth={1}
+            stroke="#aaaaaa"
+            strokeWidth={2}
           />
           {axisTicks.map((tick) => (
             <g key={tick.date} transform={`translate(${tick.x}, 0)`}>
@@ -260,17 +266,16 @@ function WordStream({
                 x2={0}
                 y1={0}
                 y2={6}
-                stroke="currentColor"
+                stroke="#aaaaaa"
                 strokeWidth={1}
               />
               <text
                 y={9}
                 dy="0.71em"
                 textAnchor="middle"
-                fontSize={10}
-                stroke="white"
-                strokeWidth={0.5}
+                fontSize={11}
                 fill="white"
+                fontWeight="500"
               >
                 {tick.date}
               </text>
@@ -283,20 +288,19 @@ function WordStream({
           {fields.map((field, i) => (
             <g key={field}>
               <circle
-                r={5}
+                r={6}
                 cy={i * 20}
                 fill={colorScheme(i)}
-                fillOpacity={1}
+                fillOpacity={0.9}
                 stroke="white"
-                strokeWidth={0.5}
+                strokeWidth={1.5}
               />
               <text
-                y={i * 20 + 3}
-                dx={10}
-                fontSize={10}
+                y={i * 20 + 4}
+                dx={12}
+                fontSize={11}
                 fill="white"
-                stroke="white"
-                strokeWidth={0.3}
+                fontWeight="500"
               >
                 {field}
               </text>
@@ -311,9 +315,10 @@ function WordStream({
             y={0}
             width={brushSelection[1] - brushSelection[0]}
             height={dimensions[1] - 100}
-            fill="rgba(128, 128, 128, 0.3)"
+            fill="rgba(255, 255, 255, 0.15)"
             stroke="white"
-            strokeWidth={1}
+            strokeWidth={2}
+            strokeOpacity={0.8}
             pointerEvents="none"
           />
         )}

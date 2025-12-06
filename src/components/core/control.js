@@ -167,7 +167,7 @@ function ControlPanel({
           />
         </div>
         <Button
-          color="green"
+          color="blue"
           disabled={selectedOptions ? false : true}
           type="submit"
         >

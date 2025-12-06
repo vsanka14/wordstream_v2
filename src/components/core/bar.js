@@ -21,7 +21,7 @@ function Bar({
         <div className="w-full flex items-center p-1 gap-2">
           <button
             onClick={onClose}
-            className="w-5 h-5 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-gray-600 transition-colors duration-200 focus:outline-none"
+            className="w-5 h-5 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-gray-700 transition-colors duration-200 focus:outline-none"
             aria-label="Close detail view (Esc)"
             title="Close (Esc)"
           >
@@ -29,7 +29,7 @@ function Bar({
               <IconX />
             </div>
           </button>
-          <h3 className="text-gray-200 text-sm md:text-base font-semibold">
+          <h3 className="text-white text-sm md:text-base font-semibold">
             Most Viewed Channels
           </h3>
           {brushRange && (
@@ -74,7 +74,7 @@ function Bar({
       <div className="w-full flex items-center p-1 gap-2">
         <button
           onClick={onClose}
-          className="w-5 h-5 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-gray-600 transition-colors duration-200 focus:outline-none"
+          className="w-5 h-5 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-gray-700 transition-colors duration-200 focus:outline-none"
           aria-label="Close detail view (Esc)"
           title="Close (Esc)"
         >
@@ -82,7 +82,7 @@ function Bar({
             <IconX />
           </div>
         </button>
-        <h3 className="text-gray-200 text-sm md:text-base font-semibold">
+        <h3 className="text-white text-sm md:text-base font-semibold">
           Most Viewed Channels
         </h3>
         <span className="text-gray-400 text-xs">{`(${brushRange[0]} - ${brushRange[1]})`}</span>
@@ -93,8 +93,8 @@ function Bar({
             const isSelected = detailsData && entry.id === detailsData.id;
             const isHovered = hoveredId === entry.id;
             const barColor = colorScheme(fields.indexOf(entry.topic));
-            const barOpacity = isSelected ? 0.9 : isHovered ? 0.75 : 0.5;
-            const textColor = isSelected ? "#202020" : barColor;
+            const barOpacity = isSelected ? 1 : isHovered ? 0.9 : 0.75;
+            const textColor = "#ffffff";
             const textWeight = isSelected ? "bold" : "normal";
 
             return (

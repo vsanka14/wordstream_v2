@@ -60,13 +60,17 @@ function Tooltip({
         aria-live="polite"
         aria-describedby={ariaDescribedBy}
         tabIndex={0}
-        className="relative bg-gray-900 text-white text-sm rounded-lg shadow-xl text-center border border-gray-700 animate-fade-in focus:outline-none focus:ring-2 focus:ring-blue-400"
-        style={{ width: "400px", minWidth: "400px", maxWidth: "90vw" }}
+        className="relative bg-gray-800 text-white text-sm rounded-lg shadow-xl text-center border border-gray-700 animate-fade-in focus:outline-none focus:ring-2 focus:ring-blue-500"
+        style={{
+          width: "400px",
+          minWidth: "400px",
+          maxWidth: "90vw",
+        }}
       >
         {/* Close button for additional accessibility */}
         <button
           onClick={onClose}
-          className="absolute text-gray-400 hover:text-white focus:text-white focus:outline-none hover:bg-gray-800 rounded-full p-1 transition-colors duration-200 z-10"
+          className="absolute text-gray-400 hover:text-white focus:text-white focus:outline-none hover:bg-gray-700 rounded-full p-1 transition-colors duration-200 z-10"
           style={{ top: "8px", right: "8px" }}
           aria-label="Close tooltip"
         >
@@ -87,7 +91,7 @@ function Tooltip({
 
         <div className="px-6 py-4 pr-10">
           {title && (
-            <div className="font-semibold mb-2 text-blue-300">{title}</div>
+            <div className="font-semibold mb-2 text-blue-400">{title}</div>
           )}
           {description && (
             <div

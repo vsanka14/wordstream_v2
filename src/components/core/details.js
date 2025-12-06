@@ -6,7 +6,7 @@ function Details({ data }) {
   return (
     <div className="w-full h-full flex flex-col items-center p-2">
       <div className="mb-4">
-        <h2 className="text-gray-200 text-base md:text-lg font-semibold tracking-wide">
+        <h2 className="text-white text-base md:text-lg font-semibold tracking-wide">
           {data.text}
         </h2>
       </div>
