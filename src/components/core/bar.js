@@ -32,10 +32,7 @@ function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
       .selectAll(".bar-group")
       .data(data, (entry) => entry.id)
       .join((enter) =>
-        enter
-          .append("g")
-          .attr("class", "bar-group")
-          .style("cursor", "pointer")
+        enter.append("g").attr("class", "bar-group").style("cursor", "pointer")
       );
 
     // Add/update rectangles
@@ -62,7 +59,10 @@ function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
         text = group.append("text");
       }
       text
-        .attr("fill", isSelected ? "#202020" : colorScheme(fields.indexOf(entry.topic)))
+        .attr(
+          "fill",
+          isSelected ? "#202020" : colorScheme(fields.indexOf(entry.topic))
+        )
         .attr("font-weight", isSelected ? "bold" : "normal")
         .attr("x", 10)
         .attr("y", yScale(index) + yScale.bandwidth() / 2 + 5)
@@ -84,9 +84,10 @@ function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
       })
       .on("mouseleave", function (entry) {
         const isSelected = detailsData && entry.id === detailsData.id;
-        d3.select(this).select("rect").attr("fill-opacity", isSelected ? 0.9 : 0.5);
+        d3.select(this)
+          .select("rect")
+          .attr("fill-opacity", isSelected ? 0.9 : 0.5);
       });
-
   }, [dimensions, data, wordsData, setDetailsData, detailsData]);
 
   return (
