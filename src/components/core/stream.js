@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import {
   curveCardinal,
   scaleOrdinal,
@@ -8,7 +8,7 @@ import {
   select,
   area,
   axisBottom,
-  easeBackIn,
+  easeQuadOut,
   brushX,
   event,
 } from "d3";
@@ -31,8 +31,25 @@ function WordStream({
   const legendRef = useRef();
   const brushRef = useRef();
   const prevBrushRange = usePreviousValue(brushRange);
+  const rafRef = useRef(null);
+
+  // Memoized scale band inverter to avoid recreating on each render
+  const scaleBandInvert = useCallback((scale) => {
+    const domain = scale.domain();
+    const paddingOuter = scale(domain[0]);
+    const eachBand = scale.step();
+    return function (value) {
+      const index = Math.floor((value - paddingOuter) / eachBand);
+      return domain[Math.max(0, Math.min(index, domain.length - 1))];
+    };
+  }, []);
 
   useEffect(() => {
+    // Cancel any pending animation frame on cleanup or re-run
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+    }
+
     const {
       streamSizeScale,
       stackedLayers,
@@ -62,95 +79,92 @@ function WordStream({
       .y0((d) => streamSizeScale(d[0]))
       .y1((d) => streamSizeScale(d[1]));
 
-    legend.selectAll("*").remove();
-    legend.attr("transform", `translate(${dimensions[0] - 150}, 20)`);
-    const legendSelection = legend
-      .selectAll(".legendNode")
-      .data(fields, (d) => d);
+    // Batch DOM updates using requestAnimationFrame for smoother rendering
+    rafRef.current = requestAnimationFrame(() => {
+      // Update legend - clear and rebuild
+      legend.selectAll("*").remove();
+      legend.attr("transform", `translate(${dimensions[0] - 150}, 20)`);
+      const legendSelection = legend
+        .selectAll(".legendNode")
+        .data(fields, (d) => d);
 
-    legendSelection
-      .join("circle")
-      .attr("r", 5)
-      .attr("cy", (d, i) => i * 20)
-      .attr("fill", (d, i) => colorScheme(i))
-      .attr("fill-opacity", 1)
-      .attr("stroke", "white")
-      .attr("stroke-width", 0.5);
+      legendSelection
+        .join("circle")
+        .attr("r", 5)
+        .attr("cy", (d, i) => i * 20)
+        .attr("fill", (d, i) => colorScheme(i))
+        .attr("fill-opacity", 1)
+        .attr("stroke", "white")
+        .attr("stroke-width", 0.5);
 
-    legendSelection
-      .join("text")
-      .text((d) => d)
-      .attr("y", (d, i) => i * 20 + 3)
-      .attr("font-size", 10)
-      .attr("alignment-baseling", "middle")
-      .attr("stroke", "white")
-      .attr("dx", 10);
+      legendSelection
+        .join("text")
+        .text((d) => d)
+        .attr("y", (d, i) => i * 20 + 3)
+        .attr("font-size", 10)
+        .attr("alignment-baseling", "middle")
+        .attr("stroke", "white")
+        .attr("dx", 10);
 
-    svg
-      .selectAll(".curve")
-      .data(stackedLayers)
-      .join("path")
-      .attr("class", "curve")
-      .transition()
-      .attr("d", areaFn)
-      .ease(easeBackIn)
-      .duration(400)
-      .attr("fill-opacity", 0.4)
-      .attr("stroke-width", 0)
-      .attr("stroke", "white")
-      .attr("topic", (d, i) => fields[i])
-      .style("fill", (d, i) => colorScheme(i));
+      // Update curves with optimized transitions
+      svg
+        .selectAll(".curve")
+        .data(stackedLayers)
+        .join("path")
+        .attr("class", "curve")
+        .transition()
+        .attr("d", areaFn)
+        .ease(easeQuadOut)
+        .duration(250)
+        .attr("fill-opacity", 0.4)
+        .attr("stroke-width", 0)
+        .attr("stroke", "white")
+        .attr("topic", (d, i) => fields[i])
+        .style("fill", (d, i) => colorScheme(i));
 
-    svg
-      .selectAll(".word")
-      .data(allWords, (d) => d.id)
-      .join(
-        (enter) =>
-          enter
-            .append("g")
-            .attr("class", "word")
-            .attr(
-              "transform",
-              (d) => `translate(${d.x}, ${d.y}) rotate(${d.rotate})`
-            )
-            .append("text")
-            .text((d) => d.text)
-            .attr("id", (d) => d.id)
-            .attr("font-family", "Arial")
-            .attr("font-size", (d) => d.fontSize)
-            .attr("fill", (d) => colorScheme(fields.indexOf(d.topic)))
-            .attr("fill-opacity", 1)
-            .attr("text-anchor", "middle")
-            .attr("topic", (d) => d.topic)
-            .attr("display", (d) => (d.placed ? "block" : "none")),
-        (update) =>
-          update
-            .transition()
-            .attr(
-              "transform",
-              (d) => `translate(${d.x}, ${d.y}) rotate(${d.rotate})`
-            )
-            .ease(easeBackIn)
-            .delay(200)
-            .duration(400)
-            .select("text")
-            .attr("topic", (d) => d.topic)
-            .attr("fill", (d) => colorScheme(fields.indexOf(d.topic)))
-            .attr("font-size", function (d) {
-              return d.fontSize;
-            })
-            .attr("display", (d) => (d.placed ? "block" : "none")),
-        (exit) => exit.remove()
-      );
-    function scaleBandInvert(scale) {
-      const domain = scale.domain();
-      const paddingOuter = scale(domain[0]);
-      const eachBand = scale.step();
-      return function (value) {
-        const index = Math.floor((value - paddingOuter) / eachBand);
-        return domain[Math.max(0, Math.min(index, domain.length - 1))];
-      };
-    }
+      // Update words with optimized enter/update/exit pattern
+      svg
+        .selectAll(".word")
+        .data(allWords, (d) => d.id)
+        .join(
+          (enter) =>
+            enter
+              .append("g")
+              .attr("class", "word")
+              .style("will-change", "transform")
+              .attr(
+                "transform",
+                (d) => `translate(${d.x}, ${d.y}) rotate(${d.rotate})`
+              )
+              .append("text")
+              .text((d) => d.text)
+              .attr("id", (d) => d.id)
+              .attr("font-family", "Arial")
+              .attr("font-size", (d) => d.fontSize)
+              .attr("fill", (d) => colorScheme(fields.indexOf(d.topic)))
+              .attr("fill-opacity", 1)
+              .attr("text-anchor", "middle")
+              .attr("topic", (d) => d.topic)
+              .attr("display", (d) => (d.placed ? "block" : "none")),
+          (update) =>
+            update
+              .transition()
+              .attr(
+                "transform",
+                (d) => `translate(${d.x}, ${d.y}) rotate(${d.rotate})`
+              )
+              .ease(easeQuadOut)
+              .duration(250)
+              .select("text")
+              .attr("topic", (d) => d.topic)
+              .attr("fill", (d) => colorScheme(fields.indexOf(d.topic)))
+              .attr("font-size", function (d) {
+                return d.fontSize;
+              })
+              .attr("display", (d) => (d.placed ? "block" : "none")),
+          (exit) => exit.remove()
+        );
+    });
     const brush = brushX()
       .extent([
         [0, 0],
@@ -166,7 +180,14 @@ function WordStream({
     if (clearBrush) {
       brushNode.call(brush.move, null);
     }
-  }, [wordsData, dimensions, setBrushRange, clearBrush]);
+
+    // Cleanup function to cancel pending animation frames
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, [wordsData, dimensions, setBrushRange, clearBrush, scaleBandInvert]);
 
   useEffect(() => {
     if (!rawData || !brushRange) return;

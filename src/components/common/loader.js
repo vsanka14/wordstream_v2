@@ -3,7 +3,13 @@ import { IconSpinner } from "icons";
 
 function Loader() {
   return (
-    <div className="absolute inset-0 mx-auto my-auto w-16 h-16 text-gray-300">
+    <div
+      className="absolute inset-0 mx-auto my-auto w-16 h-16 text-gray-300"
+      style={{
+        willChange: "transform",
+        transform: "translateZ(0)", // Force GPU layer
+      }}
+    >
       <IconSpinner />
     </div>
   );

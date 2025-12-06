@@ -60,21 +60,29 @@ function ControlPanel({
     if (!response || !canCalcLayers.current) return;
     setwordStreamProcessing(true);
     setRawData(response);
-    const layersData = calcLayers({
-      data: response,
-      screenDimensions: dimensions,
-      maxFontSize: parseInt(fields.maxFontSize),
-      minFontSize: parseInt(fields.minFontSize),
-    });
-    const allWords = [];
-    layersData.data.forEach((row) => {
-      layersData.fields.forEach((field) => {
-        allWords.push(...row.words[field]);
+
+    // Defer heavy computation to next frame to allow UI to update first
+    const timeoutId = setTimeout(() => {
+      requestAnimationFrame(() => {
+        const layersData = calcLayers({
+          data: response,
+          screenDimensions: dimensions,
+          maxFontSize: parseInt(fields.maxFontSize),
+          minFontSize: parseInt(fields.minFontSize),
+        });
+        const allWords = [];
+        layersData.data.forEach((row) => {
+          layersData.fields.forEach((field) => {
+            allWords.push(...row.words[field]);
+          });
+        });
+        layersData["allWords"] = allWords;
+        setWordsData(layersData);
+        setwordStreamProcessing(false);
       });
-    });
-    layersData["allWords"] = allWords;
-    setWordsData(layersData);
-    setwordStreamProcessing(false);
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [
     response,
     setWordsData,
