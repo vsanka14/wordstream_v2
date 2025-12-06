@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import classNames from "classnames";
+import cx from "classnames";
 
 function Button({ color, children, onClick, disabled, type }) {
   const colors = useMemo(
@@ -19,7 +19,7 @@ function Button({ color, children, onClick, disabled, type }) {
 
   return (
     <button
-      className={classNames(
+      className={cx(
         "w-full h-auto",
         "py-3 px-4",
         "focus:outline-none focus:shadow-outline",

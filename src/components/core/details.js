@@ -1,16 +1,16 @@
 import React from "react";
-import classNames from "classnames";
+import cx from "classnames";
 import { SecondaryHeading, Card } from "components/common";
 import { IconLike, IconDislike, IconComment } from "icons";
 
 function Details({ data }) {
   return (
-    <div className={classNames("w-full h-full", "flex flex-col")}>
+    <div className={cx("w-full h-full", "flex flex-col")}>
       <div>
         <SecondaryHeading>{data.text}</SecondaryHeading>
       </div>
       <div
-        className={classNames(
+        className={cx(
           "h-full",
           "flex justify-around items-center",
           "text-left"

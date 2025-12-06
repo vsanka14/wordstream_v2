@@ -1,10 +1,10 @@
-import classNames from "classnames";
+import cx from "classnames";
 import React from "react";
 
 const bug = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className={classNames("h-full w-full", "stroke-current")}
+    className={cx("h-full w-full", "stroke-current")}
     viewBox="0 0 24 24"
     strokeWidth="2"
     fill="none"

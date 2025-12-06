@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import classNames from "classnames";
+import cx from "classnames";
 import { Paragraph } from ".";
 
 function Card({ color, icon, data }) {
@@ -13,18 +13,18 @@ function Card({ color, icon, data }) {
   );
 
   return (
-    <div className={classNames("w-full h-full", "px-2 py-5")}>
+    <div className={cx("w-full h-full", "px-2 py-5")}>
       <div
-        className={classNames(
+        className={cx(
           "w-full h-full",
           "text-gray-100",
           "flex flex-col justify-center items-center",
           colors[color]
         )}
       >
-        <div className={classNames("w-16 h-16")}>{icon()}</div>
+        <div className={cx("w-16 h-16")}>{icon()}</div>
         <Paragraph>
-          <span className={classNames("font-semibold")}>{data}</span>
+          <span className={cx("font-semibold")}>{data}</span>
         </Paragraph>
       </div>
     </div>

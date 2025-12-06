@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { ControlPanel, WordStream, BarChart, Details } from "components/core";
 import { IconContainer, Button, Loader, Error } from "components/common";
 import { IconX } from "icons";
-import classNames from "classnames";
+import cx from "classnames";
 
 export default function App() {
   const [rawData, setRawData] = useState(null);
@@ -23,11 +23,9 @@ export default function App() {
   }, [subGraphData, setDetailsData]);
 
   return (
-    <div
-      className={classNames("w-screen h-screen", "flex flex-col md:flex-row")}
-    >
+    <div className={cx("w-screen h-screen", "flex flex-col md:flex-row")}>
       <div
-        className={classNames(
+        className={cx(
           "w-full md:w-1/4 lg:w-1/5 md:h-full",
           "border border-blue-500"
         )}
@@ -41,11 +39,11 @@ export default function App() {
           dimensions={dimensions}
         />
       </div>
-      <div className={classNames("relative", "flex-1 md:h-full", "text-white")}>
+      <div className={cx("relative", "flex-1 md:h-full", "text-white")}>
         {loading || wordStreamProcessing ? (
           <>
             <div
-              className={classNames(
+              className={cx(
                 "absolute inset-0",
                 "h-full w-full",
                 "bg-gray-600",
@@ -60,12 +58,12 @@ export default function App() {
         ) : (
           wordsData && (
             <div
-              className={classNames(
+              className={cx(
                 "w-full h-full flex flex-col justify-center items-center"
               )}
             >
               <div
-                className={classNames("w-full")}
+                className={cx("w-full")}
                 style={{
                   height: `${displayBarChart ? "50%" : "100%"}`,
                 }}
@@ -83,7 +81,7 @@ export default function App() {
                   setClearBrush={setClearBrush}
                 />
                 <div
-                  className={classNames(
+                  className={cx(
                     "absolute",
                     "inset-x-0 top-0",
                     "w-full",
@@ -94,7 +92,7 @@ export default function App() {
                     }
                   )}
                 >
-                  <div className={classNames("w-12 h-6")}>
+                  <div className={cx("w-12 h-6")}>
                     <Button
                       color="red"
                       onClick={() => {
@@ -112,15 +110,13 @@ export default function App() {
               </div>
               {displayBarChart ? (
                 <div
-                  className={classNames("w-full", "flex flex-col md:flex-row")}
+                  className={cx("w-full", "flex flex-col md:flex-row")}
                   style={{
                     height: "50%",
                   }}
                 >
                   {subGraphData && (
-                    <div
-                      className={classNames("w-full md:w-1/2 h-full", "p-2")}
-                    >
+                    <div className={cx("w-full md:w-1/2 h-full", "p-2")}>
                       <BarChart
                         data={subGraphData}
                         wordsData={wordsData}
@@ -131,9 +127,7 @@ export default function App() {
                     </div>
                   )}
                   {detailsData && (
-                    <div
-                      className={classNames("w-full md:w-1/2 h-full", "p-2")}
-                    >
+                    <div className={cx("w-full md:w-1/2 h-full", "p-2")}>
                       <Details data={detailsData} />
                     </div>
                   )}

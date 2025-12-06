@@ -1,10 +1,10 @@
 import React from "react";
-import classNames from "classnames";
+import cx from "classnames";
 
 export default function Label({ labelFor, labelValue }) {
   return (
     <label
-      className={classNames(
+      className={cx(
         "block",
         "text-gray-200 text-xs md:text-base",
         "font-semibold"

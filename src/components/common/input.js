@@ -1,5 +1,5 @@
 import React from "react";
-import classNames from "classnames";
+import cx from "classnames";
 
 export default function Input({
   id,
@@ -11,7 +11,7 @@ export default function Input({
 }) {
   return (
     <input
-      className={classNames(
+      className={cx(
         "shadow",
         "appearance-none",
         "border rounded",

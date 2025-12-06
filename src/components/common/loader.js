@@ -1,11 +1,11 @@
 import React from "react";
-import classNames from "classnames";
+import cx from "classnames";
 import { IconSpinner } from "icons";
 
 function Loader() {
   return (
     <div
-      className={classNames(
+      className={cx(
         "absolute",
         "inset-0",
         "mx-auto my-auto",

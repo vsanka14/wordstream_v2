@@ -1,8 +1,8 @@
 import React from "react";
-import classNames from "classnames";
+import cx from "classnames";
 
 function IconContainer({ children }) {
-  return <div className={classNames("w-6 h-6")}>{children}</div>;
+  return <div className={cx("w-6 h-6")}>{children}</div>;
 }
 
 export default IconContainer;

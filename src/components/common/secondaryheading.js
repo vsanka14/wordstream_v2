@@ -1,10 +1,10 @@
 import React from "react";
-import classNames from "classnames";
+import cx from "classnames";
 
 function SecondaryHeading({ children }) {
   return (
     <h1
-      className={classNames(
+      className={cx(
         "text-gray-200 text-xl md:text-2xl lg:text-3xl text-center",
         "font-semibold tracking-loose"
       )}

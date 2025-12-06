@@ -12,7 +12,7 @@ import {
   brushX,
   event,
 } from "d3";
-import classNames from "classnames";
+import cx from "classnames";
 import { usePreviousValue } from "hooks";
 
 function WordStream({
@@ -198,7 +198,7 @@ function WordStream({
   ]);
 
   return (
-    <div className={classNames("w-full h-full")}>
+    <div className={cx("w-full h-full")}>
       <svg
         viewBox={`0 0 ${dimensions[0]} ${dimensions[1]}`}
         style={{

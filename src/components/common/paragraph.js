@@ -1,9 +1,9 @@
 import React from "react";
-import classNames from "classnames";
+import cx from "classnames";
 
 function Paragraph({ children }) {
   return (
-    <p className={classNames("block", "text-gray-200 text-xs md:text-base")}>
+    <p className={cx("block", "text-gray-200 text-xs md:text-base")}>
       {children}
     </p>
   );
