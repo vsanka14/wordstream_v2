@@ -63,8 +63,10 @@ export default function App() {
           WebkitTransform: sidebarCollapsed
             ? "translate3d(-100%, 0, 0)"
             : "translate3d(0, 0, 0)",
-          transition: "transform 300ms ease",
-          WebkitTransition: "-webkit-transform 300ms ease",
+          transition: "transform 400ms cubic-bezier(0.4, 0.0, 0.2, 1)",
+          WebkitTransition:
+            "-webkit-transform 400ms cubic-bezier(0.4, 0.0, 0.2, 1)",
+          willChange: "transform",
         }}
       >
         <div className="h-full overflow-y-auto">
@@ -85,7 +87,7 @@ export default function App() {
         style={{
           opacity: sidebarCollapsed ? 0 : 0.5,
           pointerEvents: sidebarCollapsed ? "none" : "auto",
-          transition: "opacity 300ms cubic-bezier(0.25, 0.1, 0.25, 1)",
+          transition: "opacity 400ms cubic-bezier(0.4, 0.0, 0.2, 1)",
           willChange: "opacity",
         }}
         onClick={() => setSidebarCollapsed(true)}
@@ -96,7 +98,8 @@ export default function App() {
         className="relative text-white flex-1 min-h-screen w-full"
         style={{
           marginLeft: !sidebarCollapsed ? "20%" : "3.5rem",
-          transition: "margin-left 300ms cubic-bezier(0.25, 0.1, 0.25, 1)",
+          transition: "margin-left 400ms cubic-bezier(0.4, 0.0, 0.2, 1)",
+          willChange: "margin-left",
         }}
       >
         {loading || wordStreamProcessing ? (
@@ -163,10 +166,11 @@ export default function App() {
                 style={{ height: "calc(100vh - 100px)" }}
               >
                 <div
-                  className="w-full"
+                  className="w-full relative"
                   style={{
                     height: displayBarChart ? "65%" : "100%",
-                    transition: "height 300ms ease-out",
+                    transition: "height 400ms cubic-bezier(0.4, 0.0, 0.2, 1)",
+                    willChange: displayBarChart ? "height" : "auto",
                   }}
                 >
                   <WordStream
@@ -182,34 +186,35 @@ export default function App() {
                     setClearBrush={setClearBrush}
                   />
                 </div>
-                {displayBarChart && (
-                  <div
-                    className="w-full flex flex-col md:flex-row border-t-2 border-gray-700 bg-gray-900 bg-opacity-95 rounded-lg mr-12"
-                    style={{
-                      height: "35%",
-                      minHeight: "180px",
-                      marginLeft: sidebarCollapsed ? "0" : "3rem",
-                      transition:
-                        "margin-left 300ms cubic-bezier(0.25, 0.1, 0.25, 1)",
-                    }}
-                  >
-                    <div className="w-full md:w-1/2 h-full p-2">
-                      {subGraphData && (
-                        <BarChart
-                          data={subGraphData}
-                          wordsData={wordsData}
-                          brushRange={brushRange}
-                          setDetailsData={setDetailsData}
-                          detailsData={detailsData}
-                          onClose={closeDetailView}
-                        />
-                      )}
-                    </div>
-                    <div className="w-full md:w-1/2 h-full p-2">
-                      {detailsData && <Details data={detailsData} />}
-                    </div>
+                <div
+                  className="w-full flex flex-col md:flex-row border-t-2 border-gray-700 bg-gray-900 bg-opacity-95 rounded-lg mr-12 overflow-hidden"
+                  style={{
+                    height: displayBarChart ? "35%" : "0%",
+                    minHeight: displayBarChart ? "180px" : "0",
+                    opacity: displayBarChart ? 1 : 0,
+                    marginLeft: sidebarCollapsed ? "0" : "3rem",
+                    transition:
+                      "height 400ms cubic-bezier(0.4, 0.0, 0.2, 1), opacity 400ms cubic-bezier(0.4, 0.0, 0.2, 1), min-height 400ms cubic-bezier(0.4, 0.0, 0.2, 1), margin-left 400ms cubic-bezier(0.4, 0.0, 0.2, 1)",
+                    willChange: displayBarChart ? "height, opacity" : "auto",
+                    pointerEvents: displayBarChart ? "auto" : "none",
+                  }}
+                >
+                  <div className="w-full md:w-1/2 h-full p-2">
+                    {subGraphData && (
+                      <BarChart
+                        data={subGraphData}
+                        wordsData={wordsData}
+                        brushRange={brushRange}
+                        setDetailsData={setDetailsData}
+                        detailsData={detailsData}
+                        onClose={closeDetailView}
+                      />
+                    )}
                   </div>
-                )}
+                  <div className="w-full md:w-1/2 h-full p-2">
+                    {detailsData && <Details data={detailsData} />}
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="flex-1 flex items-center justify-center">
