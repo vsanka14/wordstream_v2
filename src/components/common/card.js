@@ -8,6 +8,7 @@ function Card({ color, icon, data }) {
       red: "bg-red-400",
       blue: "bg-blue-400",
       gray: "bg-gray-500",
+      green: "bg-green-500",
     }),
     []
   );

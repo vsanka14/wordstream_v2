@@ -13,3 +13,4 @@ export { default as IconLike } from "./like";
 export { default as IconDislike } from "./dislike";
 export { default as IconComment } from "./comment";
 export { default as IconMenu } from "./menu";
+export { default as IconEye } from "./eye";

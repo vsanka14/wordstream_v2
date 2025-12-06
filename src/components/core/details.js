@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "components/common";
-import { IconLike, IconDislike, IconComment } from "icons";
+import { IconLike, IconDislike, IconComment, IconEye } from "icons";
 
 function Details({ data }) {
   return (
@@ -11,6 +11,7 @@ function Details({ data }) {
         </h2>
       </div>
       <div className="flex flex-wrap justify-center items-center">
+        <Card color="green" icon={IconEye} data={`${data.views} Views`} />
         <Card color="blue" icon={IconLike} data={`${data.likes} Likes`} />
         <Card
           color="red"
