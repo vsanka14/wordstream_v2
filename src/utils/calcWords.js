@@ -21,20 +21,20 @@ export default function calcWords(props) {
     spiral = achemedeanSpiral;
   getImageData();
 
-  for (var tc = 0; tc < fields.length; tc++) {
-    var field = fields[tc];
-    var board = buildBoard(boxes, field);
-    // var innerBoxes = boxes[field];
+  for (let tc = 0; tc < fields.length; tc++) {
+    const field = fields[tc];
+    const board = buildBoard(boxes, field);
+    // const innerBoxes = boxes[field];
     //Place
     for (let bc = 0; bc < data.length; bc++) {
-      var words = data[bc].words[field];
-      var n = words.length;
-      var innerBox = boxes[field][bc];
+      const words = data[bc].words[field];
+      const n = words.length;
+      const innerBox = boxes[field][bc];
       board.boxWidth = innerBox.width;
       board.boxHeight = innerBox.height;
       board.boxX = innerBox.x;
       board.boxY = innerBox.y;
-      for (var i = 0; i < n; i++) {
+      for (let i = 0; i < n; i++) {
         place(words[i], board, bc);
       }
     }
@@ -63,10 +63,10 @@ export default function calcWords(props) {
   }
 
   function getImageData() {
-    var av = 0;
-    var flow = 0;
-    // var data = boxes.data;
-    var c = getContext(document.createElement("canvas"));
+    const av = 0;
+    const flow = 0;
+    // const data = boxes.data;
+    const c = getContext(document.createElement("canvas"));
     c.clearRect(0, 0, cw, ch);
     let x = 0,
       y = 0,
@@ -74,17 +74,17 @@ export default function calcWords(props) {
     for (let i = 0; i < data.length; i++) {
       for (let fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
         const field = fields[fieldIndex];
-        var words = data[i].words[field];
-        var n = words.length;
-        var di = -1;
-        var d = {};
+        const words = data[i].words[field];
+        const n = words.length;
+        let di = -1;
+        let d = {};
         while (++di < n) {
           d = words[di];
           c.save();
           d.fontSize = fontSizeScale(d.sudden);
           d.rotate = (~~(Math.random() * 4) - 2) * av - flow;
           c.font = ~~(d.fontSize + 1) + "px " + font;
-          var w = ~~c.measureText(d.text).width,
+          const w = ~~c.measureText(d.text).width,
             h = d.fontSize;
           if (h > maxh) maxh = h;
           if (x + w >= cw) {
@@ -116,18 +116,18 @@ export default function calcWords(props) {
       }
     }
 
-    for (var bc = 0; bc < data.length; bc++) {
+    for (let bc = 0; bc < data.length; bc++) {
       for (let fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
         const field = fields[fieldIndex];
-        var words2 = data[bc].words[field];
-        var n2 = words2.length;
-        var di2 = -1;
-        var d2 = {};
+        const words2 = data[bc].words[field];
+        const n2 = words2.length;
+        let di2 = -1;
+        let d2 = {};
         while (++di2 < n2) {
           d2 = words2[di2];
-          var pixels = c.getImageData(d2.x, d2.y, d2.width, d2.height).data;
+          const pixels = c.getImageData(d2.x, d2.y, d2.width, d2.height).data;
           d2.sprite = [];
-          for (var i2 = 0; i2 << 2 < pixels.length; i2++) {
+          for (let i2 = 0; i2 << 2 < pixels.length; i2++) {
             d2.sprite.push(pixels[i2 << 2]);
           }
         }
@@ -138,7 +138,7 @@ export default function calcWords(props) {
   function getContext(canvas) {
     canvas.width = cw;
     canvas.height = ch;
-    var context = canvas.getContext("2d");
+    const context = canvas.getContext("2d");
     context.fillStyle = context.strokeStyle = "red";
     context.textAlign = "center";
     context.textBaseline = "middle";
@@ -146,15 +146,15 @@ export default function calcWords(props) {
   }
 
   function buildSvg(field) {
-    var width = screenDimensions[0],
+    const width = screenDimensions[0],
       height = screenDimensions[1];
-    var svg = d3.select(document.createElement("svg"));
+    const svg = d3.select(document.createElement("svg"));
     svg.attr("width", width).attr("height", height);
-    var graphGroup = svg.append("g");
+    const graphGroup = svg.append("g");
 
-    var catIndex = fields.indexOf(field);
+    const catIndex = fields.indexOf(field);
 
-    var area1 = d3
+    const area1 = d3
       .area()
       .curve(d3.curveLinear)
       .x(function (d, i) {
@@ -165,7 +165,7 @@ export default function calcWords(props) {
         return streamSizeScale(d[0]);
       });
 
-    var area2 = d3
+    const area2 = d3
       .area()
       .curve(d3.curveLinear)
       .x(function (d, i) {
@@ -195,16 +195,16 @@ export default function calcWords(props) {
   }
 
   function buildCanvas(boxes, field) {
-    var svg = buildSvg(field);
-    var path1 = svg.select("#path1").attr("d");
-    var p2d1 = new Path2D(path1);
-    var path2 = svg.select("#path2").attr("d");
-    var p2d2 = new Path2D(path2);
-    var canvas = document.createElement("canvas");
+    const svg = buildSvg(field);
+    const path1 = svg.select("#path1").attr("d");
+    const p2d1 = new Path2D(path1);
+    const path2 = svg.select("#path2").attr("d");
+    const p2d2 = new Path2D(path2);
+    const canvas = document.createElement("canvas");
     // document.querySelector('body').appendChild(canvas);
     canvas.width = screenDimensions[0];
     canvas.height = screenDimensions[1];
-    var ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
     ctx.fillStyle = "red";
     ctx.fill(p2d1);
     ctx.fill(p2d2);
@@ -212,19 +212,19 @@ export default function calcWords(props) {
   }
 
   function buildBoard(boxes, field) {
-    var canvas = buildCanvas(boxes, field);
-    var width = canvas.width,
+    const canvas = buildCanvas(boxes, field);
+    const width = canvas.width,
       height = canvas.height;
-    var board = {};
+    const board = {};
     board.x = 0;
     board.y = 0;
     board.width = width;
     board.height = height;
-    var sprite = [];
+    const sprite = [];
     //initialization
     for (let i = 0; i < width * height; i++) sprite[i] = 0;
-    var c = canvas.getContext("2d");
-    var pixels = c.getImageData(0, 0, width, height).data;
+    const c = canvas.getContext("2d");
+    const pixels = c.getImageData(0, 0, width, height).data;
     for (let i = 0; i < width * height; i++) {
       sprite[i] = pixels[i << 2];
     }
@@ -233,7 +233,7 @@ export default function calcWords(props) {
   }
 
   function place(word, board, bc) {
-    var maxDelta = ~~Math.sqrt(
+    const maxDelta = ~~Math.sqrt(
         board.boxWidth * board.boxWidth + board.boxHeight * board.boxHeight
       ),
       startX = (bc + 1) * board.boxWidth,
@@ -243,8 +243,8 @@ export default function calcWords(props) {
         ((board.boxHeight * (Math.random() + 0.5)) >> 1)
       ),
       s = spiral([board.boxWidth, board.boxHeight]),
-      dt = Math.random() < 0.5 ? 1 : -1,
-      t = -dt,
+      dt = Math.random() < 0.5 ? 1 : -1;
+    let t = -dt,
       dxdy,
       dx,
       dy;
@@ -276,17 +276,17 @@ export default function calcWords(props) {
   }
 
   function cloudCollide(word, board) {
-    var wh = word.height,
+    const wh = word.height,
       ww = word.width,
       bw = board.width;
     //For each pixel in word
-    for (var j = 0; j < wh; j++) {
-      for (var i = 0; i < ww; i++) {
-        var wsi = j * ww + i; //word sprite index;
-        var wordPixel = word.sprite[wsi];
+    for (let j = 0; j < wh; j++) {
+      for (let i = 0; i < ww; i++) {
+        const wsi = j * ww + i; //word sprite index;
+        const wordPixel = word.sprite[wsi];
 
-        var bsi = (j + word.y + word.y0) * bw + i + (word.x + word.x0); //board sprite index
-        var boardPixel = board.sprite[bsi];
+        const bsi = (j + word.y + word.y0) * bw + i + (word.x + word.x0); //board sprite index
+        const boardPixel = board.sprite[bsi];
 
         if (boardPixel !== 0 && wordPixel !== 0) {
           return true;
@@ -298,22 +298,22 @@ export default function calcWords(props) {
 
   function placeWordToBoard(word, board) {
     //Add the sprite
-    var y0 = word.y + word.y0,
+    const y0 = word.y + word.y0,
       x0 = word.x + word.x0,
       bw = board.width,
       ww = word.width,
       wh = word.height;
-    for (var j = 0; j < wh; j++) {
-      for (var i = 0; i < ww; i++) {
-        var wsi = j * ww + i;
-        var bsi = (j + y0) * bw + i + x0;
+    for (let j = 0; j < wh; j++) {
+      for (let i = 0; i < ww; i++) {
+        const wsi = j * ww + i;
+        const bsi = (j + y0) * bw + i + x0;
         if (word.sprite[wsi] !== 0) board.sprite[bsi] = word.sprite[wsi];
       }
     }
   }
 
   function achemedeanSpiral(size) {
-    var e = size[0] / size[1];
+    const e = size[0] / size[1];
     return function (t) {
       return [e * (t *= 0.1) * Math.cos(t), t * Math.sin(t)];
     };
