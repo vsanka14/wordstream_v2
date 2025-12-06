@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   curveCardinal,
   scaleOrdinal,
@@ -7,6 +7,7 @@ import {
   schemeSet3,
   area,
 } from "d3";
+import { useClickOutside } from "hooks";
 
 function WordStream({
   rawData,
@@ -18,15 +19,29 @@ function WordStream({
   setBrushRange,
   clearBrush,
   setClearBrush,
+  displayBarChart,
 }) {
   const [brushSelection, setBrushSelection] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
   const [dragStart, setDragStart] = useState(null);
   const [moveOffset, setMoveOffset] = useState(0);
+  const streamContainerRef = useRef(null);
+
+  // Minimum drag distance in pixels to trigger brush selection (prevents accidental tiny clicks)
+  const MIN_BRUSH_WIDTH = 10;
 
   const { streamSizeScale, stackedLayers, boxWidth, fields, allWords, dates } =
     wordsData;
+
+  // Close details graph when clicking outside the stream
+  useClickOutside(streamContainerRef, () => {
+    if (displayBarChart) {
+      setDisplayBarChart(false);
+      setBrushSelection(null);
+      setClearBrush(true);
+    }
+  });
 
   // D3 calculations only - no DOM manipulation
   const xAxisScale = scaleBand().domain(dates).range([0, dimensions[0]]);
@@ -113,11 +128,26 @@ function WordStream({
       return;
     }
 
+    // Convert pixel positions to dates
+    const [x0, x1] = brushSelection;
+    const brushWidth = Math.abs(x1 - x0);
+
+    // If the brush is too small and we were dragging (not moving), treat it as a click to close
+    if (isDragging && brushWidth < MIN_BRUSH_WIDTH) {
+      // This was just a click, not a drag - close the details graph if open
+      if (displayBarChart) {
+        setDisplayBarChart(false);
+        setClearBrush(true);
+      }
+      setBrushSelection(null);
+      setIsDragging(false);
+      setIsMoving(false);
+      return;
+    }
+
     setIsDragging(false);
     setIsMoving(false);
 
-    // Convert pixel positions to dates
-    const [x0, x1] = brushSelection;
     const domain = xAxisScale.domain();
     const paddingOuter = xAxisScale(domain[0]);
     const eachBand = xAxisScale.step();
@@ -181,7 +211,7 @@ function WordStream({
   }
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full" ref={streamContainerRef}>
       <svg
         viewBox={`0 0 ${dimensions[0]} ${dimensions[1]}`}
         style={{
