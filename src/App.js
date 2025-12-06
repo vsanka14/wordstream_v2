@@ -203,10 +203,10 @@ export default function App() {
                 </div>
                 {displayBarChart ? (
                   <div
-                    className="w-full flex flex-col md:flex-row relative border-t-2 border-gray-600 bg-gray-800 bg-opacity-50"
+                    className="flex flex-col md:flex-row relative border-t-2 border-gray-600 bg-gray-800 bg-opacity-50 rounded-lg mr-8"
                     style={{
-                      height: "50%",
-                      minHeight: "300px",
+                      height: "45%",
+                      minHeight: "250px",
                     }}
                   >
                     {/* Close button - positioned at top right of detail section */}
