@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import { ControlPanel, WordStream, BarChart, Details } from "components/core";
 import {
   IconContainer,
@@ -25,6 +31,23 @@ export default function App() {
   const [showTooltip, setShowTooltip] = useState(false);
   const tooltipTriggerRef = useRef(null);
   const dimensions = useMemo(() => [1200, 800], []);
+
+  // Close detail view handler
+  const closeDetailView = useCallback(() => {
+    setDisplayBarChart(false);
+    setClearBrush(true);
+  }, []);
+
+  // Escape key handler for closing detail view
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && displayBarChart) {
+        closeDetailView();
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [displayBarChart, closeDetailView]);
 
   useEffect(() => {
     if (!subGraphData) return;
@@ -92,7 +115,7 @@ export default function App() {
       <div
         className="relative text-white flex-1 min-h-screen w-full"
         style={{
-          marginLeft: !sidebarCollapsed ? "20%" : "0",
+          marginLeft: !sidebarCollapsed ? "20%" : "3.5rem",
           transition: "margin-left 300ms cubic-bezier(0.25, 0.1, 0.25, 1)",
         }}
       >
@@ -177,45 +200,26 @@ export default function App() {
                     clearBrush={clearBrush}
                     setClearBrush={setClearBrush}
                   />
-                  <div
-                    className={cx(
-                      "absolute",
-                      "inset-x-0 top-0",
-                      "w-full",
-                      "flex justify-start md:justify-end items-center",
-                      "pt-20", // Add padding to avoid overlap with toggle button
-                      {
-                        visible: displayBarChart,
-                        invisible: !displayBarChart,
-                      }
-                    )}
-                  >
-                    {displayBarChart && (
-                      <div className="w-12 h-6 absolute top-0 mr-2 z-50">
-                        <Button
-                          color="red"
-                          onClick={() => {
-                            setDisplayBarChart(false);
-                            setClearBrush(true);
-                          }}
-                        >
-                          <IconContainer>
-                            {" "}
-                            <IconX> </IconX>{" "}
-                          </IconContainer>
-                        </Button>
-                      </div>
-                    )}
-                  </div>
                 </div>
                 {displayBarChart ? (
                   <div
-                    className="w-full flex flex-col md:flex-row"
+                    className="w-full flex flex-col md:flex-row relative border-t-2 border-gray-600 bg-gray-800 bg-opacity-50"
                     style={{
                       height: "50%",
                       minHeight: "300px",
                     }}
                   >
+                    {/* Close button - positioned at top right of detail section */}
+                    <button
+                      onClick={closeDetailView}
+                      className="absolute top-3 right-3 z-50 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-gray-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-400"
+                      aria-label="Close detail view (Esc)"
+                      title="Close (Esc)"
+                    >
+                      <div className="w-4 h-4">
+                        <IconX />
+                      </div>
+                    </button>
                     {subGraphData && (
                       <div className="w-full md:w-1/2 h-full p-2">
                         <BarChart
