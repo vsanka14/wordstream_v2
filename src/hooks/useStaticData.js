@@ -36,7 +36,8 @@ const useStaticDataReducer = (state = initialState, action) => {
   }
 };
 
-function useStaticData() {
+function useStaticData(callbacks = {}) {
+  const { onSuccess, onError, onLoadingChange } = callbacks;
   const [state, dispatch] = useReducer(useStaticDataReducer, initialState);
   const { response, loading, error, idle } = state;
 
@@ -48,6 +49,10 @@ function useStaticData() {
             type: "FETCH_START",
           });
 
+          if (onLoadingChange) {
+            onLoadingChange(true);
+          }
+
           // Use the static data loader instead of making API call
           const filteredData = await getTopTerms(params);
 
@@ -58,20 +63,38 @@ function useStaticData() {
             payload: filteredData,
           });
 
+          if (onLoadingChange) {
+            onLoadingChange(false);
+          }
+
+          if (onSuccess) {
+            onSuccess(filteredData);
+          }
+
           resolve(filteredData);
         } catch (err) {
           console.error("Error in useStaticData:", err);
 
+          const errorMessage = err.message || "Failed to load data";
+
           dispatch({
             type: "FETCH_ERROR",
-            payload: err.message || "Failed to load data",
+            payload: errorMessage,
           });
+
+          if (onError) {
+            onError(errorMessage);
+          }
+
+          if (onLoadingChange) {
+            onLoadingChange(false);
+          }
 
           reject(err);
         }
       });
     },
-    [dispatch]
+    [dispatch, onSuccess, onError, onLoadingChange]
   );
 
   return {

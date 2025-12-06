@@ -1,19 +1,7 @@
-import React, {
-  useState,
-  useMemo,
-  useEffect,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { ControlPanel, WordStream, BarChart, Details } from "components/core";
-import {
-  IconContainer,
-  Button,
-  Loader,
-  Error,
-  Tooltip,
-} from "components/common";
-import { IconX, IconMenu, IconInfo } from "icons";
+import { Loader, Error, Tooltip } from "components/common";
+import { IconMenu, IconInfo } from "icons";
 import cx from "classnames";
 
 export default function App() {
@@ -33,26 +21,18 @@ export default function App() {
   const dimensions = useMemo(() => [1200, 800], []);
 
   // Close detail view handler
-  const closeDetailView = useCallback(() => {
+  const closeDetailView = () => {
     setDisplayBarChart(false);
     setClearBrush(true);
-  }, []);
+  };
 
-  // Escape key handler for closing detail view
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === "Escape" && displayBarChart) {
-        closeDetailView();
-      }
-    };
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [displayBarChart, closeDetailView]);
-
-  useEffect(() => {
-    if (!subGraphData) return;
-    setDetailsData(subGraphData[0]);
-  }, [subGraphData, setDetailsData]);
+  // Callback to handle subgraph data and set initial details
+  const handleSubGraphData = (data) => {
+    setSubGraphData(data);
+    if (data && data.length > 0) {
+      setDetailsData(data[0]);
+    }
+  };
 
   return (
     <div className="w-screen min-h-screen flex flex-col md:flex-row relative">
@@ -191,7 +171,7 @@ export default function App() {
                 >
                   <WordStream
                     displayBarChart={displayBarChart}
-                    setSubGraphData={setSubGraphData}
+                    setSubGraphData={handleSubGraphData}
                     setDisplayBarChart={setDisplayBarChart}
                     rawData={rawData}
                     wordsData={wordsData}

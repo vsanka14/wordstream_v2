@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import {
   Label,
   Paragraph,
@@ -23,15 +23,7 @@ function ControlPanel({
   const [topic, setTopic] = useState(topics[0]);
   const [options, setOptions] = useState(topicOptions["youtube"]);
   const [selectedOptions, setSelectedOptions] = useState(null);
-  const { response, loading, error, post } = useStaticData();
-  const canCalcLayers = useRef(false);
-
-  useEffect(() => {
-    setOptions(topicOptions[topic.value]);
-    const defaultOptions = [...topicOptions[topic.value]];
-    defaultOptions.splice(2);
-    setSelectedOptions(defaultOptions);
-  }, [topic, setOptions, topicOptions]);
+  const [submittedFields, setSubmittedFields] = useState(null);
 
   const [fields, handleFieldChange] = useFormFields({
     noOfTerms: "45",
@@ -39,64 +31,65 @@ function ControlPanel({
     minFontSize: "10",
   });
 
-  useEffect(() => {
-    canCalcLayers.current = false;
-  }, [fields, canCalcLayers]);
-
-  const handleFormSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      post({
-        topic: topic.value,
-        noOfTopTerms: fields.noOfTerms,
-        fields: selectedOptions.map((item) => item.value),
-      });
-      canCalcLayers.current = true;
-    },
-    [topic, post, selectedOptions, fields, canCalcLayers]
-  );
-
-  useEffect(() => {
-    if (!response || !canCalcLayers.current) return;
+  // Process data - called directly with the fields at submission time
+  const processData = (responseData, formFields) => {
     setwordStreamProcessing(true);
-    setRawData(response);
+    setRawData(responseData);
 
     // Defer heavy computation to next frame to allow UI to update first
-    const timeoutId = setTimeout(() => {
-      requestAnimationFrame(() => {
-        const layersData = calcLayers({
-          data: response,
-          screenDimensions: dimensions,
-          maxFontSize: parseInt(fields.maxFontSize),
-          minFontSize: parseInt(fields.minFontSize),
-        });
-        const allWords = [];
-        layersData.data.forEach((row) => {
-          layersData.fields.forEach((field) => {
-            allWords.push(...row.words[field]);
-          });
-        });
-        layersData["allWords"] = allWords;
-        setWordsData(layersData);
-        setwordStreamProcessing(false);
+    requestAnimationFrame(() => {
+      const layersData = calcLayers({
+        data: responseData,
+        screenDimensions: dimensions,
+        maxFontSize: parseInt(formFields.maxFontSize),
+        minFontSize: parseInt(formFields.minFontSize),
       });
-    }, 0);
+      const allWords = [];
+      layersData.data.forEach((row) => {
+        layersData.fields.forEach((field) => {
+          allWords.push(...row.words[field]);
+        });
+      });
+      layersData["allWords"] = allWords;
+      setWordsData(layersData);
+      setwordStreamProcessing(false);
+    });
+  };
 
-    return () => clearTimeout(timeoutId);
-  }, [
-    response,
-    setWordsData,
-    setRawData,
-    setwordStreamProcessing,
-    dimensions,
-    fields,
-    canCalcLayers,
-  ]);
+  // Hook with callbacks
+  const { post } = useStaticData({
+    onError: setError,
+    onLoadingChange: setLoading,
+  });
 
-  useEffect(() => {
-    setLoading(loading);
-    setError(error);
-  }, [loading, error, setLoading, setError]);
+  // Handle topic change - direct state update
+  const handleTopicChange = (newTopic) => {
+    setTopic(newTopic);
+    const newOptions = topicOptions[newTopic.value];
+    setOptions(newOptions);
+    const defaultOptions = [...newOptions];
+    defaultOptions.splice(2);
+    setSelectedOptions(defaultOptions);
+  };
+
+  // Handle form submission - trigger data fetch with callback
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    const currentFields = { ...fields }; // Capture fields at submission time
+
+    post({
+      topic: topic.value,
+      noOfTopTerms: fields.noOfTerms,
+      fields: selectedOptions.map((item) => item.value),
+    })
+      .then((responseData) => {
+        // Process data with the captured fields
+        processData(responseData, currentFields);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch data:", err);
+      });
+  };
 
   return (
     <div className="w-full h-screen p-4">
@@ -110,7 +103,7 @@ function ControlPanel({
             value={topic}
             name="topics"
             options={topics}
-            onChange={(topic) => setTopic(topic)}
+            onChange={handleTopicChange}
             className="basic-multi-select cursor-pointer text-xs md:text-base my-2"
             classNamePrefix="select"
           />
