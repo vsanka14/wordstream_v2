@@ -35,15 +35,25 @@ export const loadCompressedData = async (topic) => {
 
     const arrayBuffer = await response.arrayBuffer();
 
-    // Decompress the data
-    const decompressed = pako.ungzip(new Uint8Array(arrayBuffer), {
-      to: "string",
-    });
+    let data;
+    try {
+      // Try to decompress the data
+      const decompressed = pako.ungzip(new Uint8Array(arrayBuffer), {
+        to: "string",
+      });
+      data = JSON.parse(decompressed);
+    } catch (decompressError) {
+      // If decompression fails, the data might already be decompressed
+      // This can happen when Vite or the browser automatically decompresses .gz files
+      console.log(
+        `Data appears to be already decompressed for ${topic}, parsing directly`
+      );
+      const text = new TextDecoder().decode(arrayBuffer);
+      data = JSON.parse(text);
+    }
 
-    // Parse JSON and cache it
-    const data = JSON.parse(decompressed);
+    // Cache and return the data
     dataCache[topic] = data;
-
     return data;
   } catch (error) {
     console.error(`Error loading compressed data for ${topic}:`, error);

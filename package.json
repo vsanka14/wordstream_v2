@@ -2,27 +2,21 @@
   "name": "wordstream",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "classnames": "^2.5.1",
     "d3": "^5.16.0",
     "pako": "^2.1.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "resize-observer-polyfill": "^1.5.1"
   },
   "scripts": {
     "compress-data": "node scripts/compress-data.js",
-    "start": "NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
-    "build": "NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "build:styles": "postcss src/tailwind.src.css -o src/tailwind.css",
-    "prebuild": "NODE_ENV=production npm run build:styles",
-    "prestart": "npm run build:styles"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "browserslist": {
     "production": [
@@ -37,9 +31,10 @@
     ]
   },
   "devDependencies": {
-    "@fullhuman/postcss-purgecss": "^2.3.0",
-    "autoprefixer": "^9.8.5",
-    "postcss-cli": "^7.1.1",
-    "tailwindcss": "^1.4.6"
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "vite": "^5.4.11"
   }
 }
