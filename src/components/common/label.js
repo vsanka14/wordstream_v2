@@ -1,13 +1,14 @@
 import React from "react";
+import classNames from "classnames";
 
 export default function Label({ labelFor, labelValue }) {
   return (
     <label
-      className={`
-                block
-                text-gray-200 text-xs md:text-base 
-                font-semibold
-            `}
+      className={classNames(
+        "block",
+        "text-gray-200 text-xs md:text-base",
+        "font-semibold"
+      )}
       htmlFor={labelFor}
     >
       {labelValue}

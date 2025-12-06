@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import classNames from "classnames";
 import { Paragraph } from ".";
 
 function Card({ color, icon, data }) {
@@ -12,35 +13,18 @@ function Card({ color, icon, data }) {
   );
 
   return (
-    <div
-      className={`
-                w-full h-full
-                px-2 py-5
-            `}
-    >
+    <div className={classNames("w-full h-full", "px-2 py-5")}>
       <div
-        className={`
-                    w-full h-full
-                    text-gray-100
-                    flex flex-col justify-center items-center
-                    ${colors[color]}
-                `}
+        className={classNames(
+          "w-full h-full",
+          "text-gray-100",
+          "flex flex-col justify-center items-center",
+          colors[color]
+        )}
       >
-        <div
-          className={`
-                        w-16 h-16
-                    `}
-        >
-          {icon()}
-        </div>
+        <div className={classNames("w-16 h-16")}>{icon()}</div>
         <Paragraph>
-          <span
-            className={`
-                        font-semibold
-                    `}
-          >
-            {data}
-          </span>
+          <span className={classNames("font-semibold")}>{data}</span>
         </Paragraph>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from "classnames";
 
 export default function Input({
   id,
@@ -10,16 +11,18 @@ export default function Input({
 }) {
   return (
     <input
-      className={`
-                shadow
-                appearance-none
-                border rounded
-                w-full
-                py-3 px-3
-                text-gray-700 text-sm md:text-base lg:text-lg xl:text-xl
-                focus:outline-none focus:shadow-outline
-                ${errored ? `border-red-500` : null}
-            `}
+      className={classNames(
+        "shadow",
+        "appearance-none",
+        "border rounded",
+        "w-full",
+        "py-3 px-3",
+        "text-gray-700 text-sm md:text-base lg:text-lg xl:text-xl",
+        "focus:outline-none focus:shadow-outline",
+        {
+          "border-red-500": errored,
+        }
+      )}
       id={id}
       type={type}
       onChange={handleChange}

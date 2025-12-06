@@ -1,21 +1,17 @@
 import React from "react";
+import classNames from "classnames";
 import { SecondaryHeading } from "components/common";
 import { IconBug } from "icons";
 
 function Loader() {
   return (
     <div
-      className={`
-                h-full w-full
-                flex justify-center items-center
-            `}
+      className={classNames(
+        "h-full w-full",
+        "flex justify-center items-center"
+      )}
     >
-      <div
-        className={`
-                w-12 h-12 
-                text-red-400
-            `}
-      >
+      <div className={classNames("w-12 h-12", "text-red-400")}>
         <IconBug />
       </div>
       <SecondaryHeading> Something went wrong. </SecondaryHeading>

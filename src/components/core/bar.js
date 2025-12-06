@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import * as d3 from "d3";
+import classNames from "classnames";
 import { useResizeObserver } from "hooks";
 import { SecondaryHeading, Paragraph } from "components/common";
 
@@ -90,45 +91,29 @@ function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
         return colorScheme(fields.indexOf(entry.topic));
       })
       .text((entry) => `${entry.text}`)
-      .attr("class", 'label')
+      .attr("class", "label")
       .attr("x", 10)
       .transition()
       .attr("y", (entry, index) => yScale(index) + yScale.bandwidth() / 2 + 5);
   }, [dimensions, data, wordsData, setDetailsData, detailsData, clickedItem]);
 
   return (
-    <div
-      className={`
-				w-full h-full
-				flex flex-col 
-			`}
-    >
+    <div className={classNames("w-full h-full", "flex flex-col")}>
       <div
-        className={`
-					w-full 
-					flex flex-col justify-center items-center
-					p-2
-				`}
+        className={classNames(
+          "w-full",
+          "flex flex-col justify-center items-center",
+          "p-2"
+        )}
       >
         <SecondaryHeading> Most Viewed Channels </SecondaryHeading>
         <Paragraph> {`From ${brushRange[0]} to ${brushRange[1]}`} </Paragraph>
       </div>
       <div
         ref={wrapperRef}
-        className={`
-          w-full 
-          flex-1
-					relative
-					p-2
-				`}
+        className={classNames("w-full", "flex-1", "relative", "p-2")}
       >
-        <svg
-          ref={svgRef}
-          className={`
-						w-full h-full
-						block
-					`}
-        />
+        <svg ref={svgRef} className={classNames("w-full h-full", "block")} />
       </div>
     </div>
   );
