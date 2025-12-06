@@ -39,7 +39,7 @@ export default function App() {
       {/* Sidebar Toggle Button - positioned absolutely at top-left of viewport */}
       <div className="fixed top-2 left-2 z-40 w-12 h-12">
         <button
-          className="w-full h-full hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 rounded-lg focus:outline-none transition-all duration-200 ease-in-out flex items-center justify-center"
+          className="w-full h-full text-gray-300 hover:text-white rounded-lg focus:outline-none transition-all duration-200 ease-in-out flex items-center justify-center"
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
         >
           <div className="w-6 h-6">

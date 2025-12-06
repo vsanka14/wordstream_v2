@@ -60,7 +60,7 @@ function Tooltip({
         aria-live="polite"
         aria-describedby={ariaDescribedBy}
         tabIndex={0}
-        className="relative bg-gray-800 text-white text-sm rounded-lg shadow-xl text-center border border-gray-700 animate-fade-in focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="relative bg-gray-900 text-white text-sm rounded-lg shadow-xl text-center border border-gray-800 animate-fade-in focus:outline-none focus:ring-2 focus:ring-blue-500"
         style={{
           width: "400px",
           minWidth: "400px",

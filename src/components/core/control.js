@@ -5,8 +5,9 @@ import {
   Button,
   Range,
   IconContainer,
+  Select,
+  MultiSelect,
 } from "components/common";
-import Select from "react-select";
 import { useFormFields, useStaticData } from "hooks";
 import { IconPlane } from "icons";
 import { selectTopics, calcLayers } from "utils";
@@ -22,7 +23,12 @@ function ControlPanel({
   const { topics, topicOptions } = selectTopics;
   const [topic, setTopic] = useState(topics[0]);
   const [options, setOptions] = useState(topicOptions["youtube"]);
-  const [selectedOptions, setSelectedOptions] = useState(null);
+  // Initialize with first 2 options by default
+  const [selectedOptions, setSelectedOptions] = useState(() => {
+    const defaultOptions = [...topicOptions["youtube"]];
+    defaultOptions.splice(2);
+    return defaultOptions;
+  });
 
   const [fields, handleFieldChange] = useFormFields({
     noOfTerms: "45",
@@ -103,26 +109,23 @@ function ControlPanel({
             name="topics"
             options={topics}
             onChange={handleTopicChange}
-            className="basic-multi-select cursor-pointer text-xs md:text-base my-2"
-            classNamePrefix="select"
+            className="text-xs md:text-base my-2"
           />
         </div>
         <div className="w-full md:mb-6">
           <Label labelFor="options" labelValue="Options" />
-          <Select
-            isMulti
+          <MultiSelect
             name="options"
             options={options}
             value={selectedOptions}
             onChange={(options) => setSelectedOptions(options)}
-            className="basic-multi-select cursor-pointer text-xs md:text-base my-2"
-            classNamePrefix="select"
+            className="text-xs md:text-base my-2"
           />
         </div>
         <div className="w-5/12 md:w-full md:mb-6">
           <div className="flex items-center justify-between my-2">
             <Label labelFor="noOfTerms" labelValue="Terms" />
-            <Paragraph className="text-gray-100">
+            <Paragraph className="text-gray-300">
               {" "}
               {fields.noOfTerms}{" "}
             </Paragraph>
@@ -138,7 +141,7 @@ function ControlPanel({
         <div className="w-5/12 md:w-full md:mb-6">
           <div className="flex items-center justify-between my-2">
             <Label labelFor="maxFontSize" labelValue="Max Font Size" />
-            <Paragraph className="text-gray-100">
+            <Paragraph className="text-gray-300">
               {" "}
               {fields.maxFontSize} px{" "}
             </Paragraph>
@@ -154,7 +157,7 @@ function ControlPanel({
         <div className="w-5/12 md:w-full md:mb-6">
           <div className="flex items-center justify-between my-2">
             <Label labelFor="minFontSize" labelValue="Min Font Size" />
-            <Paragraph className="text-gray-100">
+            <Paragraph className="text-gray-300">
               {fields.minFontSize} px
             </Paragraph>
           </div>

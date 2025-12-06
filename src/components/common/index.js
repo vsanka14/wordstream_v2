@@ -9,3 +9,4 @@ export { default as Card } from "./card";
 export { default as Loader } from "./loader";
 export { default as Error } from "./error";
 export { default as Tooltip } from "./tooltip";
+export { Select, MultiSelect } from "./select";
