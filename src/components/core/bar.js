@@ -1,8 +1,16 @@
 import React, { useRef, useEffect } from "react";
 import * as d3 from "d3";
 import { useResizeObserver } from "hooks";
+import { IconX } from "icons";
 
-function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
+function Bar({
+  data,
+  wordsData,
+  brushRange,
+  setDetailsData,
+  detailsData,
+  onClose,
+}) {
   const wrapperRef = useRef();
   const svgRef = useRef();
   const dimensions = useResizeObserver(wrapperRef);
@@ -91,7 +99,17 @@ function Bar({ data, wordsData, brushRange, setDetailsData, detailsData }) {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="w-full flex justify-center items-center p-1 gap-2">
+      <div className="w-full flex items-center p-1 gap-2">
+        <button
+          onClick={onClose}
+          className="w-5 h-5 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-gray-600 transition-colors duration-200 focus:outline-none"
+          aria-label="Close detail view (Esc)"
+          title="Close (Esc)"
+        >
+          <div className="w-3 h-3">
+            <IconX />
+          </div>
+        </button>
         <h3 className="text-gray-200 text-sm md:text-base font-semibold">
           Most Viewed Channels
         </h3>

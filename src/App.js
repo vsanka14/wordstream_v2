@@ -204,23 +204,15 @@ export default function App() {
                 </div>
                 {displayBarChart && (
                   <div
-                    className="w-full flex flex-col md:flex-row relative border-t-2 border-gray-600 bg-gray-800 bg-opacity-50 rounded-lg mr-8"
+                    className="w-full flex flex-col md:flex-row border-t-2 border-gray-600 bg-gray-800 bg-opacity-50 rounded-lg mr-12"
                     style={{
                       height: "35%",
                       minHeight: "180px",
+                      marginLeft: sidebarCollapsed ? "0" : "3rem",
+                      transition:
+                        "margin-left 300ms cubic-bezier(0.25, 0.1, 0.25, 1)",
                     }}
                   >
-                    {/* Close button - positioned at top right of detail section */}
-                    <button
-                      onClick={closeDetailView}
-                      className="absolute top-3 right-3 z-50 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-gray-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-400"
-                      aria-label="Close detail view (Esc)"
-                      title="Close (Esc)"
-                    >
-                      <div className="w-4 h-4">
-                        <IconX />
-                      </div>
-                    </button>
                     <div className="w-full md:w-1/2 h-full p-2">
                       {subGraphData && (
                         <BarChart
@@ -229,6 +221,7 @@ export default function App() {
                           brushRange={brushRange}
                           setDetailsData={setDetailsData}
                           detailsData={detailsData}
+                          onClose={closeDetailView}
                         />
                       )}
                     </div>
