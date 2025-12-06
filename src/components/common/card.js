@@ -14,20 +14,18 @@ function Card({ color, icon, data }) {
   );
 
   return (
-    <div className="px-2 py-2">
-      <div
-        className={cx(
-          "px-6 py-4 rounded-xl shadow-lg",
-          "text-gray-100",
-          "flex items-center space-x-3",
-          colors[color]
-        )}
-      >
-        <div className="w-8 h-8 flex-shrink-0">{icon()}</div>
-        <Paragraph>
-          <span className="font-semibold text-sm">{data}</span>
-        </Paragraph>
-      </div>
+    <div
+      className={cx(
+        "px-4 py-3 rounded-xl shadow-lg",
+        "text-gray-100",
+        "flex items-center justify-center space-x-2",
+        colors[color]
+      )}
+    >
+      <div className="w-6 h-6 flex-shrink-0">{icon()}</div>
+      <Paragraph>
+        <span className="font-semibold text-sm whitespace-nowrap">{data}</span>
+      </Paragraph>
     </div>
   );
 }
