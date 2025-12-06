@@ -21,7 +21,9 @@ function WordStream({
 }) {
   const [brushSelection, setBrushSelection] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isMoving, setIsMoving] = useState(false);
   const [dragStart, setDragStart] = useState(null);
+  const [moveOffset, setMoveOffset] = useState(0);
 
   const { streamSizeScale, stackedLayers, boxWidth, fields, allWords, dates } =
     wordsData;
@@ -50,31 +52,68 @@ function WordStream({
     color: colorScheme(i),
   }));
 
+  // Convert screen coordinates to SVG coordinates
+  const screenToSVGCoords = (svg, clientX, clientY) => {
+    const rect = svg.getBoundingClientRect();
+    const x = ((clientX - rect.left) / rect.width) * dimensions[0];
+    const y = ((clientY - rect.top) / rect.height) * dimensions[1];
+    return { x, y };
+  };
+
+  // Check if click is inside existing brush
+  const isInsideBrush = (x) => {
+    if (!brushSelection) return false;
+    const [x0, x1] = brushSelection;
+    return x >= x0 && x <= x1;
+  };
+
   // Handle brush interactions
   const handleMouseDown = (e) => {
     const svg = e.currentTarget;
-    const rect = svg.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    setIsDragging(true);
-    setDragStart(x);
-    setBrushSelection([x, x]);
+    const { x } = screenToSVGCoords(svg, e.clientX, e.clientY);
+
+    // Check if clicking inside existing brush to move it
+    if (isInsideBrush(x)) {
+      setIsMoving(true);
+      setMoveOffset(x);
+    } else {
+      // Create new brush
+      setIsDragging(true);
+      setDragStart(x);
+      setBrushSelection([x, x]);
+    }
   };
 
   const handleMouseMove = (e) => {
-    if (!isDragging || dragStart === null) return;
     const svg = e.currentTarget;
-    const rect = svg.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    setBrushSelection([Math.min(dragStart, x), Math.max(dragStart, x)]);
+    const { x } = screenToSVGCoords(svg, e.clientX, e.clientY);
+
+    if (isMoving && brushSelection) {
+      // Move existing brush
+      const [x0, x1] = brushSelection;
+      const width = x1 - x0;
+      const delta = x - moveOffset;
+      const newX0 = Math.max(0, Math.min(dimensions[0] - width, x0 + delta));
+      const newX1 = newX0 + width;
+      setBrushSelection([newX0, newX1]);
+      setMoveOffset(x);
+    } else if (isDragging && dragStart !== null) {
+      // Create new brush
+      setBrushSelection([Math.min(dragStart, x), Math.max(dragStart, x)]);
+    }
   };
 
   const handleMouseUp = () => {
-    if (!isDragging || !brushSelection) {
+    if (!isDragging && !isMoving) return;
+
+    if (!brushSelection) {
       setIsDragging(false);
+      setIsMoving(false);
       return;
     }
 
     setIsDragging(false);
+    setIsMoving(false);
 
     // Convert pixel positions to dates
     const [x0, x1] = brushSelection;
@@ -91,14 +130,44 @@ function WordStream({
     const dRangeX = [startDate, endDate];
     setBrushRange(dRangeX);
 
-    // Process brush selection
-    const selectedData = rawData.filter((item) => dRangeX.includes(item.date));
+    // Process brush selection - get all dates between start and end
+    const startIndex = domain.indexOf(startDate);
+    const endIndex = domain.indexOf(endDate);
+    const selectedDates = domain.slice(
+      Math.min(startIndex, endIndex),
+      Math.max(startIndex, endIndex) + 1
+    );
+
+    const selectedData = rawData.filter((item) =>
+      selectedDates.includes(item.date)
+    );
+
+    console.log("Selected dates:", selectedDates);
+    console.log("Selected data items:", selectedData.length);
+    console.log("First item structure:", selectedData[0]);
+
     let words = [];
     selectedData.forEach((item) => {
       Object.values(item.words).forEach((arr) => words.push(...arr));
     });
+
+    console.log("Total words before sort:", words.length);
+    console.log(
+      "Words by topic:",
+      words.reduce((acc, w) => {
+        acc[w.topic] = (acc[w.topic] || 0) + 1;
+        return acc;
+      }, {})
+    );
+
     words.sort((a, b) => b.views - a.views);
     words = words.slice(0, 10);
+
+    console.log(
+      "Top 10 words:",
+      words.map((w) => ({ text: w.text, topic: w.topic, views: w.views }))
+    );
+
     setSubGraphData(words);
     setDisplayBarChart(true);
     setClearBrush(false);
@@ -119,12 +188,18 @@ function WordStream({
           display: "block",
           width: "100%",
           height: "100%",
-          cursor: isDragging ? "col-resize" : "crosshair",
+          cursor: isDragging
+            ? "col-resize"
+            : isMoving
+            ? "grab"
+            : brushSelection && isInsideBrush
+            ? "move"
+            : "crosshair",
         }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        onMouseLeave={() => isDragging && handleMouseUp()}
+        onMouseLeave={() => (isDragging || isMoving) && handleMouseUp()}
       >
         {/* Render curves */}
         {curvePaths.map((curve) => (

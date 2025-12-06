@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState } from "react";
 import * as d3 from "d3";
 import { useResizeObserver } from "hooks";
 import { IconX } from "icons";
@@ -11,91 +11,63 @@ function Bar({
   detailsData,
   onClose,
 }) {
-  const wrapperRef = useRef();
-  const svgRef = useRef();
+  const [hoveredId, setHoveredId] = useState(null);
+  const wrapperRef = React.useRef();
   const dimensions = useResizeObserver(wrapperRef);
 
-  useEffect(() => {
-    if (!data || !dimensions) return;
+  if (!data || !dimensions) {
+    return (
+      <div className="w-full h-full flex flex-col">
+        <div className="w-full flex items-center p-1 gap-2">
+          <button
+            onClick={onClose}
+            className="w-5 h-5 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-gray-600 transition-colors duration-200 focus:outline-none"
+            aria-label="Close detail view (Esc)"
+            title="Close (Esc)"
+          >
+            <div className="w-3 h-3">
+              <IconX />
+            </div>
+          </button>
+          <h3 className="text-gray-200 text-sm md:text-base font-semibold">
+            Most Viewed Channels
+          </h3>
+          {brushRange && (
+            <span className="text-gray-400 text-xs">{`(${brushRange[0]} - ${brushRange[1]})`}</span>
+          )}
+        </div>
+        <div ref={wrapperRef} className="w-full flex-1 relative p-2" />
+      </div>
+    );
+  }
 
-    const svg = d3.select(svgRef.current);
+  // D3 for calculations only
+  const colorScheme = d3.scaleOrdinal([...d3.schemeSet3, ...d3.schemeDark2]);
+  const { fields } = wordsData;
 
-    const colorScheme = d3.scaleOrdinal([...d3.schemeSet3, ...d3.schemeDark2]);
-    const { fields } = wordsData;
+  const yScale = d3
+    .scaleBand()
+    .paddingInner(0.1)
+    .domain(data.map((value, index) => index))
+    .range([0, dimensions.height]);
 
-    const yScale = d3
-      .scaleBand()
-      .paddingInner(0.1)
-      .domain(data.map((value, index) => index))
-      .range([0, dimensions.height]);
+  const xScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (entry) => entry.views)])
+    .range([0, dimensions.width]);
 
-    const xScale = d3
-      .scaleLinear()
-      .domain([0, d3.max(data, (entry) => entry.views)])
-      .range([0, dimensions.width]);
+  // Event handlers
+  const handleBarClick = (entry) => {
+    setDetailsData(entry);
+  };
 
-    // Create groups for each bar + label pair
-    const barGroups = svg
-      .selectAll(".bar-group")
-      .data(data, (entry) => entry.id)
-      .join((enter) =>
-        enter.append("g").attr("class", "bar-group").style("cursor", "pointer")
-      );
+  const handleMouseEnter = (entry) => {
+    setHoveredId(entry.id);
+  };
 
-    // Add/update rectangles
-    barGroups.each(function (entry, index) {
-      const group = d3.select(this);
-      const isSelected = detailsData && entry.id === detailsData.id;
-
-      // Rectangle
-      let rect = group.select("rect");
-      if (rect.empty()) {
-        rect = group.append("rect");
-      }
-      rect
-        .attr("fill", colorScheme(fields.indexOf(entry.topic)))
-        .attr("fill-opacity", isSelected ? 0.9 : 0.5)
-        .attr("x", 0)
-        .attr("height", yScale.bandwidth())
-        .attr("width", xScale(entry.views))
-        .attr("y", yScale(index));
-
-      // Text label
-      let text = group.select("text");
-      if (text.empty()) {
-        text = group.append("text");
-      }
-      text
-        .attr(
-          "fill",
-          isSelected ? "#202020" : colorScheme(fields.indexOf(entry.topic))
-        )
-        .attr("font-weight", isSelected ? "bold" : "normal")
-        .attr("x", 10)
-        .attr("y", yScale(index) + yScale.bandwidth() / 2 + 5)
-        .style("pointer-events", "none")
-        .style("user-select", "none")
-        .text(entry.text);
-    });
-
-    // Event handlers on group level (D3 v5 API: data is first argument)
-    barGroups
-      .on("click", function (entry) {
-        setDetailsData(entry);
-      })
-      .on("mouseenter", function (entry) {
-        const isSelected = detailsData && entry.id === detailsData.id;
-        if (!isSelected) {
-          d3.select(this).select("rect").attr("fill-opacity", 0.75);
-        }
-      })
-      .on("mouseleave", function (entry) {
-        const isSelected = detailsData && entry.id === detailsData.id;
-        d3.select(this)
-          .select("rect")
-          .attr("fill-opacity", isSelected ? 0.9 : 0.5);
-      });
-  }, [dimensions, data, wordsData, setDetailsData, detailsData]);
+  const handleMouseLeave = () => {
+    setHoveredId(null);
+  };
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -116,7 +88,52 @@ function Bar({
         <span className="text-gray-400 text-xs">{`(${brushRange[0]} - ${brushRange[1]})`}</span>
       </div>
       <div ref={wrapperRef} className="w-full flex-1 relative p-2">
-        <svg ref={svgRef} className="w-full h-full block" />
+        <svg className="w-full h-full block">
+          {data.map((entry, index) => {
+            const isSelected = detailsData && entry.id === detailsData.id;
+            const isHovered = hoveredId === entry.id;
+            const barColor = colorScheme(fields.indexOf(entry.topic));
+            const barOpacity = isSelected ? 0.9 : isHovered ? 0.75 : 0.5;
+            const textColor = isSelected ? "#202020" : barColor;
+            const textWeight = isSelected ? "bold" : "normal";
+
+            return (
+              <g
+                key={entry.id}
+                style={{ cursor: "pointer" }}
+                onClick={() => handleBarClick(entry)}
+                onMouseEnter={() => handleMouseEnter(entry)}
+                onMouseLeave={handleMouseLeave}
+              >
+                <rect
+                  fill={barColor}
+                  fillOpacity={barOpacity}
+                  x={0}
+                  y={yScale(index)}
+                  width={xScale(entry.views)}
+                  height={yScale.bandwidth()}
+                  style={{
+                    transition: "fill-opacity 200ms ease-out",
+                  }}
+                />
+                <text
+                  fill={textColor}
+                  fontWeight={textWeight}
+                  x={10}
+                  y={yScale(index) + yScale.bandwidth() / 2 + 5}
+                  style={{
+                    pointerEvents: "none",
+                    userSelect: "none",
+                    transition:
+                      "fill 200ms ease-out, font-weight 200ms ease-out",
+                  }}
+                >
+                  {entry.text}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
       </div>
     </div>
   );
