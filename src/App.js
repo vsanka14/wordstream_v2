@@ -104,7 +104,7 @@ export default function App() {
         ) : null}
         <div className="w-full min-h-screen flex flex-col">
           {/* Title and Info Section */}
-          <div className="flex justify-center items-center py-4 px-4 flex-shrink-0">
+          <div className="flex justify-center items-center py-4 px-4 flex-shrink-0 relative z-50">
             <div className="flex items-center space-x-3">
               <h1 className="text-xl md:text-3xl font-bold text-white tracking-wider">
                 wordstream
