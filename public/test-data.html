@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Loading Test</title>
+</head>
+<body>
+    <h1>WordStream Data Loading Test</h1>
+    <button onclick="testDataLoading()">Test Data Loading</button>
+    <div id="results"></div>
+
+    <script type="module">
+        import pako from '/node_modules/pako/dist/pako.esm.mjs';
+
+        async function loadCompressedData(topic) {
+            const fileMap = {
+                'youtube': '/data/youtube.json.gz'
+            };
+
+            const filePath = fileMap[topic];
+            if (!filePath) {
+                throw new Error(`Unknown topic: ${topic}`);
+            }
+
+            try {
+                const response = await fetch(filePath);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch ${filePath}: ${response.statusText}`);
+                }
+                
+                const arrayBuffer = await response.arrayBuffer();
+                const decompressed = pako.ungzip(new Uint8Array(arrayBuffer), { to: 'string' });
+                const data = JSON.parse(decompressed);
+                
+                return data;
+            } catch (error) {
+                console.error(`Error loading compressed data for ${topic}:`, error);
+                throw error;
+            }
+        }
+
+        window.testDataLoading = async function() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = 'Loading...';
+            
+            try {
+                console.log('Testing data loading...');
+                const rawData = await loadCompressedData('youtube');
+                console.log('Data loaded successfully:', rawData);
+                
+                resultsDiv.innerHTML = `
+                    <h3>Success!</h3>
+                    <p>Loaded ${rawData.length} items</p>
+                    <p>First item structure: ${Object.keys(rawData[0]).join(', ')}</p>
+                    <p>Sample data: <pre>${JSON.stringify(rawData[0], null, 2).substring(0, 500)}...</pre></p>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                resultsDiv.innerHTML = `
+                    <h3>Error!</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        };
+    </script>
+</body>
+</html>

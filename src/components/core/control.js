@@ -8,7 +8,7 @@ import {
 } from "components/common";
 import Select from "react-select";
 import cx from "classnames";
-import { useFormFields, useFetch } from "hooks";
+import { useFormFields, useStaticData } from "hooks";
 import { IconPlane } from "icons";
 import { selectTopics, calcLayers } from "utils";
 
@@ -24,7 +24,7 @@ function ControlPanel({
   const [topic, setTopic] = useState(topics[0]);
   const [options, setOptions] = useState(topicOptions["youtube"]);
   const [selectedOptions, setSelectedOptions] = useState(null);
-  const { response, loading, error, post } = useFetch("/get_top_terms");
+  const { response, loading, error, post } = useStaticData();
   const canCalcLayers = useRef(false);
 
   useEffect(() => {

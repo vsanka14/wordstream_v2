@@ -1,13 +1,33 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+# WordStream V2
+
+A React application for visualizing word streams from large datasets. **No backend server required** - all data processing happens client-side with compressed static files.
+
+## Data Setup
+
+Before running the app, compress your JSON data files:
+
+```bash
+npm run compress-data
+```
+
+This will compress large JSON files (like youtube_py.json) and place them in `public/data/` for efficient loading.
+
 ## Available Scripts
 
 In the project directory, you can run:
+
+### `npm run compress-data`
+
+Compresses large JSON data files using gzip compression. Run this after adding new data files or when setting up the project for the first time.
 
 ### `npm start`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+**Note**: No backend server is required. All data is loaded from compressed static files.
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
