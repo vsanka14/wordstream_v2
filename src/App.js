@@ -1,7 +1,13 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { ControlPanel, WordStream, BarChart, Details } from "components/core";
-import { IconContainer, Button, Loader, Error } from "components/common";
-import { IconX, IconMenu } from "icons";
+import {
+  IconContainer,
+  Button,
+  Loader,
+  Error,
+  Tooltip,
+} from "components/common";
+import { IconX, IconMenu, IconInfo } from "icons";
 import cx from "classnames";
 
 export default function App() {
@@ -16,6 +22,8 @@ export default function App() {
   const [clearBrush, setClearBrush] = useState(false);
   const [detailsData, setDetailsData] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const tooltipTriggerRef = useRef(null);
   const dimensions = useMemo(() => [1200, 800], []);
 
   useEffect(() => {
@@ -38,30 +46,25 @@ export default function App() {
       </div>
 
       {/* Sidebar */}
-      <div
-        className={cx(
-          "absolute md:relative z-20",
-          "md:h-full transition-all duration-300 ease-in-out",
-          "bg-gray-800 shadow-lg",
-          {
-            // Mobile styles
-            "w-3/4 h-full": !sidebarCollapsed,
-            "w-0 h-0 overflow-hidden": sidebarCollapsed,
-            // Desktop styles
-            "md:w-1/4 lg:w-1/5": !sidebarCollapsed,
-            "md:w-0 md:overflow-hidden": sidebarCollapsed,
-          }
-        )}
-      >
-        <ControlPanel
-          setRawData={setRawData}
-          setWordsData={setWordsData}
-          setwordStreamProcessing={setwordStreamProcessing}
-          setLoading={setLoading}
-          setError={setError}
-          dimensions={dimensions}
-        />
-      </div>
+      {!sidebarCollapsed && (
+        <div
+          className={cx(
+            "absolute md:relative z-20",
+            "md:h-full transition-all duration-300 ease-in-out",
+            "bg-gray-800 shadow-lg",
+            "w-3/4 h-full md:w-1/4 lg:w-1/5"
+          )}
+        >
+          <ControlPanel
+            setRawData={setRawData}
+            setWordsData={setWordsData}
+            setwordStreamProcessing={setwordStreamProcessing}
+            setLoading={setLoading}
+            setError={setError}
+            dimensions={dimensions}
+          />
+        </div>
+      )}
 
       {/* Overlay for mobile when sidebar is open */}
       {!sidebarCollapsed && (
@@ -79,88 +82,145 @@ export default function App() {
             <Loader />
           </>
         ) : null}
-        {error ? (
-          <Error />
-        ) : (
-          wordsData && (
-            <div className="w-full h-full flex flex-col justify-center items-center">
-              <div
-                className="w-full"
-                style={{
-                  height: `${displayBarChart ? "50%" : "100%"}`,
-                }}
-              >
-                <WordStream
-                  displayBarChart={displayBarChart}
-                  setSubGraphData={setSubGraphData}
-                  setDisplayBarChart={setDisplayBarChart}
-                  rawData={rawData}
-                  wordsData={wordsData}
-                  dimensions={dimensions}
-                  setBrushRange={setBrushRange}
-                  brushRange={brushRange}
-                  clearBrush={clearBrush}
-                  setClearBrush={setClearBrush}
-                />
-                <div
-                  className={cx(
-                    "absolute",
-                    "inset-x-0 top-0",
-                    "w-full",
-                    "flex justify-start md:justify-end items-center",
-                    "pt-20", // Add padding to avoid overlap with toggle button
-                    {
-                      visible: displayBarChart,
-                      invisible: !displayBarChart,
-                    }
-                  )}
+        <div className="w-full h-full flex flex-col">
+          {/* Title and Info Section */}
+          <div className="flex justify-center items-center py-4 px-4 flex-shrink-0">
+            <div className="flex items-center space-x-3">
+              <h1 className="text-xl md:text-3xl font-bold text-white tracking-wider">
+                wordstream
+              </h1>
+              <div className="relative">
+                <button
+                  ref={tooltipTriggerRef}
+                  className={`w-5 h-5 md:w-6 md:h-6 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 rounded ${
+                    showTooltip
+                      ? "text-white"
+                      : "text-gray-400 hover:text-white"
+                  }`}
+                  onClick={() => setShowTooltip(!showTooltip)}
+                  aria-label="Show app information"
+                  aria-expanded={showTooltip}
+                  aria-describedby={
+                    showTooltip ? "tooltip-description" : undefined
+                  }
                 >
-                  {displayBarChart && (
-                    <div className="w-12 h-6">
-                      <Button
-                        color="red"
-                        onClick={() => {
-                          setDisplayBarChart(false);
-                          setClearBrush(true);
-                        }}
-                      >
-                        <IconContainer>
-                          {" "}
-                          <IconX> </IconX>{" "}
-                        </IconContainer>
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                  <IconInfo />
+                </button>
+
+                <Tooltip
+                  isOpen={showTooltip}
+                  onClose={() => setShowTooltip(false)}
+                  triggerRef={tooltipTriggerRef}
+                  title="WordStream Visualization"
+                >
+                  <div className="text-sm text-gray-300 leading-relaxed">
+                    <p className="mb-3">
+                      Analyze word frequency and trends over time using
+                      interactive visualizations.
+                    </p>
+                    <p>
+                      You can data via the sidebar and select timeframes in the
+                      graph for detailed views.
+                    </p>
+                  </div>
+                </Tooltip>
               </div>
-              {displayBarChart ? (
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div className="flex-1 flex flex-col justify-center items-center">
+            {error ? (
+              <Error />
+            ) : wordsData ? (
+              <div className="w-full h-full flex flex-col justify-center items-center">
                 <div
-                  className="w-full flex flex-col md:flex-row"
+                  className="w-full"
                   style={{
-                    height: "50%",
+                    height: `${displayBarChart ? "50%" : "100%"}`,
                   }}
                 >
-                  {subGraphData && (
-                    <div className="w-full md:w-1/2 h-full p-2">
-                      <BarChart
-                        data={subGraphData}
-                        wordsData={wordsData}
-                        brushRange={brushRange}
-                        setDetailsData={setDetailsData}
-                        detailsData={detailsData}
-                      />
-                    </div>
-                  )}
-                  {detailsData && (
-                    <div className="w-full md:w-1/2 h-full p-2">
-                      <Details data={detailsData} />
-                    </div>
-                  )}
+                  <WordStream
+                    displayBarChart={displayBarChart}
+                    setSubGraphData={setSubGraphData}
+                    setDisplayBarChart={setDisplayBarChart}
+                    rawData={rawData}
+                    wordsData={wordsData}
+                    dimensions={dimensions}
+                    setBrushRange={setBrushRange}
+                    brushRange={brushRange}
+                    clearBrush={clearBrush}
+                    setClearBrush={setClearBrush}
+                  />
+                  <div
+                    className={cx(
+                      "absolute",
+                      "inset-x-0 top-0",
+                      "w-full",
+                      "flex justify-start md:justify-end items-center",
+                      "pt-20", // Add padding to avoid overlap with toggle button
+                      {
+                        visible: displayBarChart,
+                        invisible: !displayBarChart,
+                      }
+                    )}
+                  >
+                    {displayBarChart && (
+                      <div className="w-12 h-6">
+                        <Button
+                          color="red"
+                          onClick={() => {
+                            setDisplayBarChart(false);
+                            setClearBrush(true);
+                          }}
+                        >
+                          <IconContainer>
+                            {" "}
+                            <IconX> </IconX>{" "}
+                          </IconContainer>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              ) : null}
-            </div>
-          )
-        )}
+                {displayBarChart ? (
+                  <div
+                    className="w-full flex flex-col md:flex-row"
+                    style={{
+                      height: "50%",
+                    }}
+                  >
+                    {subGraphData && (
+                      <div className="w-full md:w-1/2 h-full p-2">
+                        <BarChart
+                          data={subGraphData}
+                          wordsData={wordsData}
+                          brushRange={brushRange}
+                          setDetailsData={setDetailsData}
+                          detailsData={detailsData}
+                        />
+                      </div>
+                    )}
+                    {detailsData && (
+                      <div className="w-full md:w-1/2 h-full p-2">
+                        <Details data={detailsData} />
+                      </div>
+                    )}
+                  </div>
+                ) : null}
+              </div>
+            ) : (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-gray-400 text-center">
+                  <div className="text-lg mb-2">No data loaded</div>
+                  <div className="text-sm">
+                    Use the sidebar to load your data
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
