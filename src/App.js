@@ -203,7 +203,7 @@ export default function App() {
                 </div>
                 {displayBarChart ? (
                   <div
-                    className="flex flex-col md:flex-row relative border-t-2 border-gray-600 bg-gray-800 bg-opacity-50 rounded-lg mr-8"
+                    className="w-full flex flex-col md:flex-row relative border-t-2 border-gray-600 bg-gray-800 bg-opacity-50 rounded-lg mr-8"
                     style={{
                       height: "45%",
                       minHeight: "250px",
@@ -220,8 +220,8 @@ export default function App() {
                         <IconX />
                       </div>
                     </button>
-                    {subGraphData && (
-                      <div className="w-full md:w-1/2 h-full p-2">
+                    <div className="w-full md:w-1/2 h-full p-2">
+                      {subGraphData && (
                         <BarChart
                           data={subGraphData}
                           wordsData={wordsData}
@@ -229,13 +229,11 @@ export default function App() {
                           setDetailsData={setDetailsData}
                           detailsData={detailsData}
                         />
-                      </div>
-                    )}
-                    {detailsData && (
-                      <div className="w-full md:w-1/2 h-full p-2">
-                        <Details data={detailsData} />
-                      </div>
-                    )}
+                      )}
+                    </div>
+                    <div className="w-full md:w-1/2 h-full p-2">
+                      {detailsData && <Details data={detailsData} />}
+                    </div>
                   </div>
                 ) : null}
               </div>
